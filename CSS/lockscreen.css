@@ -1,0 +1,125 @@
+/* ===================== LOCK SCREEN ===================== */
+#lock-screen {
+  background: var(--wallpaper);
+  z-index: 80;
+  display: flex; flex-direction: column;
+  align-items: center; overflow: hidden;
+}
+.ls-blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(70px); opacity: 0.18; pointer-events: none;
+}
+.ls-blob-1 { width:280px; height:280px; background:#2563EB; top:-60px; right:-60px; }
+.ls-blob-2 { width:200px; height:200px; background:#7C3AED; bottom:120px; left:-80px; }
+
+.status-bar {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: 56px 28px 0;
+  font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9);
+  position: relative; z-index: 2;
+}
+.status-icons { display: flex; gap: 6px; align-items: center; }
+.si { font-size: 12px; opacity: .85; }
+
+.lock-clock-wrap { margin-top: 52px; text-align: center; position: relative; z-index: 2; }
+.lock-time {
+  font-size: 78px; font-weight: 300; letter-spacing: -3px;
+  color: #fff; line-height: 1;
+}
+.lock-date {
+  font-size: 16px; color: rgba(255,255,255,0.65);
+  margin-top: 8px; letter-spacing: 0.3px;
+}
+.lock-notifications {
+  margin-top: 28px; width: 88%;
+  display: flex; flex-direction: column; gap: 10px;
+  position: relative; z-index: 2;
+}
+.lock-notif {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--meui-radius-sm);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.ln-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.ln-text { flex: 1; }
+.ln-app  { font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom: 2px; }
+.ln-msg  { font-size: 13px; color: rgba(255,255,255,0.85); }
+
+.lock-bottom {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 24px 32px 48px;
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+  z-index: 3;
+}
+.lock-swipe-hint {
+  font-size: 13px; color: rgba(255,255,255,0.45);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.swipe-arrow { font-size: 18px; animation: bounce 1.8s infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+.lock-shortcuts { display: flex; gap: 60px; }
+.lock-shortcut {
+  width: 52px; height: 52px;
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; cursor: pointer;
+  transition: background 0.2s;
+}
+.lock-shortcut:active { background: rgba(255,255,255,0.2); }
+
+/* ===================== PIN SCREEN ===================== */
+#pin-screen {
+  background: var(--wallpaper);
+  z-index: 85;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0;
+}
+.pin-screen-bg-blur {
+  position: absolute; inset: 0;
+  backdrop-filter: blur(40px);
+  background: rgba(0,0,0,0.45);
+}
+.pin-wrap {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.pin-label { font-size: 15px; color: rgba(255,255,255,0.7); margin-bottom: 28px; }
+.pin-dots  { display: flex; gap: 16px; margin-bottom: 40px; }
+.pin-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.5);
+  transition: background 0.15s, border-color 0.15s;
+}
+.pin-dot.filled { background: #fff; border-color: #fff; }
+.pin-dot.shake  { animation: dotShake 0.4s; }
+@keyframes dotShake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 60%{transform:translateX(6px)}
+}
+.pin-pad {
+  display: grid; grid-template-columns: repeat(3, 72px);
+  grid-template-rows: repeat(4, 72px); gap: 14px;
+}
+.pin-key {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.15s, transform 0.1s; color: #fff;
+}
+.pin-key:active { background: rgba(255,255,255,0.22); transform: scale(0.93); }
+.pin-key-num { font-size: 24px; font-weight: 400; line-height: 1; }
+.pin-key-sub { font-size: 9px; letter-spacing: 1.5px; color: rgba(255,255,255,0.40); margin-top: 1px; }
+.pin-key.key-empty { background: transparent; border: none; pointer-events: none; }
+.pin-key.key-del svg { width: 22px; height: 22px; fill: rgba(255,255,255,0.8); }
