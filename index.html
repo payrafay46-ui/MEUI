@@ -900,6 +900,869 @@
 <script src="js/wallpaper.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/pages.js"></script>
+</body>
+</html>
+          <path d="M17.523 15.341a5.474 5.474 0 0 1-2.01 2.01l1.56 2.7a.5.5 0 0 1-.183.683.5.5 0 0 1-.683-.183l-1.58-2.734a5.467 5.467 0 0 1-5.254 0L7.793 20.55a.5.5 0 0 1-.683-.183.5.5 0 0 1 .183-.683l1.56-2.7A5.474 5.474 0 0 1 6.84 15H2a.5.5 0 0 1-.5-.5v-6A.5.5 0 0 1 2 8h20a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-4.477zM2.5 8.5v5.5h19V8.5H2.5zM12 3.5a6.48 6.48 0 0 0-4.843 2.158l-.707-.707A7.478 7.478 0 0 1 12 2.5a7.478 7.478 0 0 1 5.55 2.451l-.707.707A6.48 6.48 0 0 0 12 3.5zm-3 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm6 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
+        <span class="boot-powered-text">Powered by Android</span>
+      </div>
+      <div class="boot-bar-wrap"><div class="boot-bar"></div></div>
+    </div>
+  </div>
+
+  <!-- ==================== LOCK SCREEN ==================== -->
+  <div class="screen-layer hidden" id="lock-screen">
+    <div class="ls-blob ls-blob-1"></div>
+    <div class="ls-blob ls-blob-2"></div>
+    <div class="status-bar">
+      <span id="ls-time-small">12:00</span>
+      <div class="status-icons">
+        <span class="si">▲</span>
+        <span class="si">WiFi</span>
+        <span class="si">🔋</span>
+      </div>
+    </div>
+    <div class="lock-clock-wrap">
+      <div class="lock-time" id="lock-time">12:00</div>
+      <div class="lock-date" id="lock-date">Monday, January 1</div>
+    </div>
+    <div class="lock-notifications">
+      <div class="lock-notif">
+        <div class="ln-icon ic-blue">💬</div>
+        <div class="ln-text">
+          <div class="ln-app">Messages</div>
+          <div class="ln-msg">Hey, are you available later?</div>
+        </div>
+      </div>
+      <div class="lock-notif">
+        <div class="ln-icon ic-red">📧</div>
+        <div class="ln-text">
+          <div class="ln-app">Mail</div>
+          <div class="ln-msg">Your report has been reviewed.</div>
+        </div>
+      </div>
+    </div>
+    <div class="lock-bottom">
+      <div class="lock-shortcuts">
+        <div class="lock-shortcut" id="lock-flashlight">🔦</div>
+        <div class="lock-shortcut" id="lock-camera">📷</div>
+      </div>
+      <div class="lock-swipe-hint">
+        <span class="swipe-arrow">↑</span>
+        <span>Swipe up to unlock</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PIN SCREEN ==================== -->
+  <div class="screen-layer hidden" id="pin-screen">
+    <div class="pin-screen-bg-blur"></div>
+    <div class="pin-wrap">
+      <div class="pin-label" id="pin-label">Enter PIN</div>
+      <div class="pin-dots" id="pin-dots">
+        <div class="pin-dot" id="d0"></div>
+        <div class="pin-dot" id="d1"></div>
+        <div class="pin-dot" id="d2"></div>
+        <div class="pin-dot" id="d3"></div>
+      </div>
+      <div class="pin-pad">
+        <div class="pin-key" data-k="1"><span class="pin-key-num">1</span></div>
+        <div class="pin-key" data-k="2"><span class="pin-key-num">2</span><span class="pin-key-sub">ABC</span></div>
+        <div class="pin-key" data-k="3"><span class="pin-key-num">3</span><span class="pin-key-sub">DEF</span></div>
+        <div class="pin-key" data-k="4"><span class="pin-key-num">4</span><span class="pin-key-sub">GHI</span></div>
+        <div class="pin-key" data-k="5"><span class="pin-key-num">5</span><span class="pin-key-sub">JKL</span></div>
+        <div class="pin-key" data-k="6"><span class="pin-key-num">6</span><span class="pin-key-sub">MNO</span></div>
+        <div class="pin-key" data-k="7"><span class="pin-key-num">7</span><span class="pin-key-sub">PQRS</span></div>
+        <div class="pin-key" data-k="8"><span class="pin-key-num">8</span><span class="pin-key-sub">TUV</span></div>
+        <div class="pin-key" data-k="9"><span class="pin-key-num">9</span><span class="pin-key-sub">WXYZ</span></div>
+        <div class="pin-key key-empty"></div>
+        <div class="pin-key" data-k="0"><span class="pin-key-num">0</span></div>
+        <div class="pin-key key-del" id="pin-del">
+          <svg viewBox="0 0 24 24"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HOME SCREEN ==================== -->
+  <div class="screen-layer hidden" id="home-screen">
+    <div class="home-status">
+      <span id="hs-time">12:00</span>
+      <div class="home-status-icons">
+        <span class="si" style="font-size:11px">▲</span>
+        <span class="si" style="font-size:11px">WiFi</span>
+        <span class="si" style="font-size:11px">100%</span>
+      </div>
+    </div>
+
+    <!-- Clock Widget -->
+    <div class="home-clock-widget">
+      <div class="hcw-left">
+        <div class="hcw-time" id="hw-time">12:00</div>
+        <div class="hcw-date" id="hw-date">Mon, Jan 1</div>
+      </div>
+      <div class="hcw-right">
+        <div class="hcw-weather">⛅</div>
+        <div class="hcw-temp">—°C</div>
+      </div>
+    </div>
+
+    <!-- App Grid -->
+    <div class="app-grid-scroll" id="app-grid-scroll">
+      <div id="app-pages-container">
+
+      <!-- Page 1 -->
+      <div class="app-page" id="app-page-1">
+        <div class="app-icon" data-app="phone">
+          <div class="app-icon-img ic-green ic-pad">P<img src="icons/phone.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Phone</span>
+        </div>
+        <div class="app-icon" data-app="messages">
+          <div class="app-icon-img ic-blue ic-pad">M<img src="icons/messages.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Messages</span>
+        </div>
+        <div class="app-icon" data-app="camera">
+          <div class="app-icon-img ic-gray ic-pad">C<img src="icons/camera.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Camera</span>
+        </div>
+        <div class="app-icon" data-app="gallery">
+          <div class="app-icon-img ic-orange ic-pad">G<img src="icons/gallery.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Gallery</span>
+        </div>
+        <div class="app-icon" data-app="browser">
+          <div class="app-icon-img ic-blue ic-pad">B<img src="icons/browser.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Browser</span>
+        </div>
+        <div class="app-icon" data-app="maps">
+          <div class="app-icon-img ic-teal ic-pad">M<img src="icons/maps.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Maps</span>
+        </div>
+        <div class="app-icon" data-app="music">
+          <div class="app-icon-img ic-purple ic-pad">M<img src="icons/music.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Music</span>
+        </div>
+        <div class="app-icon" data-app="calendar">
+          <div class="app-icon-img ic-red ic-pad">C<img src="icons/calendar.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Calendar</span>
+        </div>
+        <div class="app-icon" data-app="mail">
+          <div class="app-icon-img ic-indigo ic-pad">M<img src="icons/mail.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Mail</span>
+        </div>
+        <div class="app-icon" data-app="notes">
+          <div class="app-icon-img ic-yellow ic-pad">N<img src="icons/notes.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Notes</span>
+        </div>
+        <div class="app-icon" data-app="clock">
+          <div class="app-icon-img ic-dark ic-pad">C<img src="icons/clock.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Clock</span>
+        </div>
+        <div class="app-icon" data-app="calculator">
+          <div class="app-icon-img ic-dark ic-pad">Ca<img src="icons/calculator.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Calculator</span>
+        </div>
+        <div class="app-icon" data-app="files">
+          <div class="app-icon-img ic-lime ic-pad">F<img src="icons/files.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Files</span>
+        </div>
+        <div class="app-icon" data-app="weather">
+          <div class="app-icon-img ic-teal ic-pad">W<img src="icons/weather.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Weather</span>
+        </div>
+        <div class="app-icon" data-app="scanner">
+          <div class="app-icon-img ic-pink ic-pad">S<img src="icons/scanner.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Scanner</span>
+        </div>
+        <div class="app-icon" data-app="settings">
+          <div class="app-icon-img ic-gray ic-pad">Se<img src="icons/settings.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Settings</span>
+        </div>
+      </div>
+
+      <!-- Page 2 — Root Tools -->
+      <div class="app-page" id="app-page-2">
+        <div class="app-icon" data-app="magisk">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a1a1a,#2d2d2d);">Mg<img src="icons/magisk.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Magisk</span>
+        </div>
+        <div class="app-icon" data-app="owl">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1c1a2e,#2e2060);">Ow<img src="icons/owl.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Owl</span>
+        </div>
+        <div class="app-icon" data-app="kernelsu">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#0a1628,#1a3a6e);">K<img src="icons/kernelsu.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">KernelSU</span>
+        </div>
+        <div class="app-icon" data-app="termux">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#0d1117,#1f2937);">Tx<img src="icons/termux.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Termux</span>
+        </div>
+        <div class="app-icon" data-app="adb">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a0a2e,#3b1a6b);">A<img src="icons/adb.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">ADB</span>
+        </div>
+        <div class="app-icon" data-app="xposed">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a1200,#4a3500);">L<img src="icons/lsposed.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">LSPosed</span>
+        </div>
+        <div class="app-icon" data-app="playstore">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a3a1a,#1a7a3a);">P<img src="icons/playstore.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Play Store</span>
+        </div>
+        <div class="app-icon" data-app="youtube">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a0000,#cc0000);">Y<img src="icons/youtube.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">YouTube</span>
+        </div>
+        <div class="app-icon" data-app="google">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a1a3a,#ffffff22);background-color:#fff;">G<img src="icons/google.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Google</span>
+        </div>
+        <div class="app-icon" data-app="minecraft">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#2d4a1a,#4a7a2a);">MC<img src="icons/mc.png" alt="" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Minecraft</span>
+        </div>
+      </div>
+
+      <!-- Page indicator dots -->
+      </div><!-- end app-pages-container -->
+      <div class="page-dots" id="page-dots">
+        <div class="page-dot active" data-page="0"></div>
+        <div class="page-dot" data-page="1"></div>
+      </div>
+    </div>
+
+    <!-- Dock -->
+    <div class="home-dock">
+      <div class="dock-bar">
+        <div class="app-icon" data-app="phone" style="padding:4px;">
+          <div class="app-icon-img ic-green ic-pad" style="width:54px;height:54px;">P<img src="icons/phone.png" alt="" onerror="this.classList.add('err')"></div>
+        </div>
+        <div class="app-icon" data-app="messages" style="padding:4px;">
+          <div class="app-icon-img ic-blue ic-pad" style="width:54px;height:54px;">M<img src="icons/messages.png" alt="" onerror="this.classList.add('err')"></div>
+        </div>
+        <div class="app-icon" data-app="camera" style="padding:4px;">
+          <div class="app-icon-img ic-gray ic-pad" style="width:54px;height:54px;">C<img src="icons/camera.png" alt="" onerror="this.classList.add('err')"></div>
+        </div>
+        <div class="app-icon" data-app="browser" style="padding:4px;">
+          <div class="app-icon-img ic-blue ic-pad" style="width:54px;height:54px;">B<img src="icons/browser.png" alt="" onerror="this.classList.add('err')"></div>
+        </div>
+      </div>
+    </div>
+    <div class="home-indicator"><div class="hi-bar"></div></div>
+  </div>
+
+  <!-- ==================== CONTROL CENTER ==================== -->
+  <div id="control-center">
+    <div id="cc-backdrop"></div>
+    <div id="cc-panel">
+      <!-- Drag hint: pill + arrow. Drag bawah=full, drag atas=tutup -->
+      <div class="cc-drag-hint" id="cc-pill">
+        <div class="cc-drag-hint-pill"></div>
+        <div class="cc-drag-hint-arrow">
+          <svg viewBox="0 0 24 24"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+        </div>
+      </div>
+
+      <!-- Top row: time + date -->
+      <div class="cc-toprow">
+        <div>
+          <div class="cc-toprow-time" id="cc-time">12:00</div>
+          <div class="cc-toprow-date" id="cc-date-str">Mon, Jan 1</div>
+        </div>
+      </div>
+
+      <!-- Brightness slider — selalu terlihat -->
+      <div class="cc-brightness-row">
+        <svg viewBox="0 0 24 24"><path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+        <input type="range" min="0" max="100" value="70" id="cc-brightness">
+      </div>
+
+      <!-- 4 Quick tiles utama — selalu terlihat -->
+      <div class="cc-quick-row">
+        <div class="cc-qtile on" data-cc="wifi">
+          <div class="cq-icon"><svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg></div>
+          <div class="cq-label">Wi-Fi</div>
+        </div>
+        <div class="cc-qtile" data-cc="data">
+          <div class="cq-icon"><svg viewBox="0 0 24 24"><path d="M1.5 4h21v2h-21zM1.5 11h21v2h-21zM1.5 18h21v2h-21zM17 2l4 4-4 4V2zm-10 8l-4 4 4 4v-8z"/></svg></div>
+          <div class="cq-label">Data</div>
+        </div>
+        <div class="cc-qtile" data-cc="torch">
+          <div class="cq-icon"><svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></div>
+          <div class="cq-label">Flashlight</div>
+        </div>
+        <div class="cc-qtile on" data-cc="silent">
+          <div class="cq-icon"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg></div>
+          <div class="cq-label">Sound</div>
+        </div>
+      </div>
+
+      <!-- ── EXPANDED SECTION ── -->
+      <div id="cc-expanded">
+
+        <!-- Secondary tiles 4+4 -->
+        <div class="cc-sec-grid">
+          <div class="cc-stile on" data-cc="bt">
+            <svg viewBox="0 0 24 24"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/></svg>
+            <div class="cc-stile-lbl">Bluetooth</div>
+          </div>
+          <div class="cc-stile" data-cc="airplane">
+            <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+            <div class="cc-stile-lbl">Airplane</div>
+          </div>
+          <div class="cc-stile" data-cc="hotspot">
+            <svg viewBox="0 0 24 24"><path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.22 1.21 4.15 3 5.19l1-1.74c-1.19-.7-2-1.97-2-3.45 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.48-.81 2.75-2 3.45l1 1.74c1.79-1.04 3-2.97 3-5.19zM12 3C6.48 3 2 7.48 2 13c0 3.7 2.01 6.92 4.99 8.65l1-1.73C5.61 18.53 4 15.96 4 13c0-4.42 3.58-8 8-8s8 3.58 8 8c0 2.96-1.61 5.53-4 6.92l1 1.73C19.99 19.92 22 16.7 22 13c0-5.52-4.48-10-10-10z"/></svg>
+            <div class="cc-stile-lbl">Hotspot</div>
+          </div>
+          <div class="cc-stile" data-cc="dnd">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>
+            <div class="cc-stile-lbl">DND</div>
+          </div>
+          <div class="cc-stile" data-cc="rotation">
+            <svg viewBox="0 0 24 24"><path d="M16.48 2.52c3.27 1.55 5.61 4.72 5.97 8.48h1.5C23.44 4.84 18.29 0 12 0l-.66.03 3.81 3.81 1.33-1.32zm-6.25-.77c-.59-.59-1.54-.59-2.12 0L1.75 8.11c-.59.59-.59 1.54 0 2.12l12.02 12.02c.59.59 1.54.59 2.12 0l6.36-6.36c.59-.59.59-1.54 0-2.12L10.23 1.75zm4.6 19.44L2.81 9.17l6.36-6.36 12.02 12.02-6.36 6.36zm-7.31.29C4.25 19.94 1.91 16.76 1.55 13H.05C.56 19.16 5.71 24 12 24l.66-.03-3.81-3.81-1.33 1.32z"/></svg>
+            <div class="cc-stile-lbl">Rotation</div>
+          </div>
+          <div class="cc-stile" data-cc="location">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <div class="cc-stile-lbl">Location</div>
+          </div>
+          <div class="cc-stile" data-cc="screenshot">
+            <svg viewBox="0 0 24 24"><path d="M4 6h2V4c-1.1 0-2 .9-2 2zm-2 4H0v2h2v-2zm14-8h-2v2h2V2zm4 4h-2v2h2V6zm-2-4v2h2c0-1.1-.9-2-2-2zM12 4C7.58 4 4 7.58 4 12s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zM2 16H0v2c1.1 0 2-.9 2-2zm-2-6H0v2h2v-2zM20 2v2h2c0-1.1-.9-2-2-2zm2 14c0 1.1-.9 2-2 2v2c2.21 0 4-1.79 4-4h-2zm0-10h2V4h-2v2z"/></svg>
+            <div class="cc-stile-lbl">Screenshot</div>
+          </div>
+          <div class="cc-stile" data-cc="nfc">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-5 14.5h-2V14h-2v2.5H9V7h2v5h2V7h2v9.5z"/></svg>
+            <div class="cc-stile-lbl">NFC</div>
+          </div>
+        </div>
+
+        <!-- Volume slider -->
+        <div class="cc-volume-row">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+          <input type="range" min="0" max="100" value="60" id="cc-volume">
+        </div>
+
+        <!-- Media card -->
+        <div class="cc-media-card">
+          <div class="cc-media-art">🎵</div>
+          <div class="cc-media-info">
+            <div class="cc-media-name">Not Playing</div>
+            <div class="cc-media-artist">—</div>
+          </div>
+          <div class="cc-media-btns">
+            <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </div>
+        </div>
+
+      </div><!-- end cc-expanded -->
+    </div><!-- end cc-panel -->
+  </div>
+
+  <!-- ==================== SETTINGS SCREEN ==================== -->
+  <div id="settings-screen">
+    <!-- Main Settings Page -->
+    <div class="settings-topbar" style="padding-bottom:4px;">
+      <div class="settings-back-btn" id="settings-close-btn">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </div>
+      <div class="settings-title">Settings</div>
+    </div>
+
+    <!-- Profile card — HyperOS 2 style -->
+    <div style="margin:0 16px 8px;background:var(--meui-card);border:1px solid var(--meui-border);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#7C3AED);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span class="ms" style="font-size:28px">person</span>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:600;color:var(--meui-text)">Xiaomi Account</div>
+        <div style="font-size:12px;color:var(--meui-text-dim);margin-top:2px;">Sign in to sync data</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--meui-text-faint)"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </div>
+
+    <div class="settings-scroll">
+      <!-- My Device -->
+      <div class="settings-section-label">My Device</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-about">
+          <div class="settings-row-icon" style="background:linear-gradient(140deg,#0f2027,#2c5364)"><span class="ms" style="font-size:20px">phone_android</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">About Phone</div>
+            <div class="settings-row-sub">MEUI Phone One · MEUI OS 1.0</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Network & Connectivity -->
+      <div class="settings-section-label">Network & Connectivity</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-wifi">
+          <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">wifi</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Wi-Fi</div>
+            <div class="settings-row-sub">HomeNetwork_5G</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-teal"><span class="ms" style="font-size:20px">signal_cellular_alt</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">SIM Cards & Mobile Networks</div>
+            <div class="settings-row-sub">SIM 1 · 4G LTE</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-purple"><span class="ms" style="font-size:20px">bluetooth</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Bluetooth</div></div>
+          <div class="settings-row-right">
+            <span style="font-size:12px;color:var(--meui-text-dim);margin-right:6px">On</span>
+            <div class="toggle on" id="tog-bt"></div>
+          </div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon" style="background:linear-gradient(140deg,#1a3a6e,#3b6fd4)"><span class="ms" style="font-size:20px">nfc</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">NFC & Contactless Payments</div></div>
+          <div class="settings-row-right"><div class="toggle" id="tog-nfc"></div></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-orange"><span class="ms" style="font-size:20px">wifi_tethering</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Hotspot & Tethering</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Display & Brightness -->
+      <div class="settings-section-label">Display</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-display">
+          <div class="settings-row-icon ic-yellow"><span class="ms" style="font-size:20px">sunny</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Display & Brightness</div>
+            <div class="settings-row-sub">Always-on display, font size, refresh rate</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-wallpaper">
+          <div class="settings-row-icon ic-indigo"><span class="ms" style="font-size:20px">wallpaper</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Wallpaper</div>
+            <div class="settings-row-sub">Home screen & lock screen</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-purple"><span class="ms" style="font-size:20px">lock_clock</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Lock Screen</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Sound & Vibration -->
+      <div class="settings-section-label">Sound & Vibration</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-sound">
+          <div class="settings-row-icon ic-orange"><span class="ms" style="font-size:20px">volume_up</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Sound & Vibration</div>
+            <div class="settings-row-sub">Ringtone, media, notifications</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-pink"><span class="ms" style="font-size:20px">notifications</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Notifications & Control Center</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Apps -->
+      <div class="settings-section-label">Apps</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-green"><span class="ms" style="font-size:20px">apps</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Manage Apps</div><div class="settings-row-sub">Permissions, defaults, storage</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-homescreen">
+          <div class="settings-row-icon ic-teal"><span class="ms" style="font-size:20px">home</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Home Screen</div><div class="settings-row-sub">Layout, icon size, dock</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Battery -->
+      <div class="settings-section-label">Battery & Performance</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-lime"><span class="ms" style="font-size:20px">battery_full</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Battery</div><div class="settings-row-sub">100% · Charging</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">memory</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Storage</div><div class="settings-row-sub">128 GB · 64 GB used</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Privacy & Security -->
+      <div class="settings-section-label">Privacy & Security</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-pin">
+          <div class="settings-row-icon ic-red"><span class="ms" style="font-size:20px">lock</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Passwords & Security</div>
+            <div class="settings-row-sub" id="pin-status-text">Screen lock · PIN</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-gray"><span class="ms" style="font-size:20px">privacy_tip</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Privacy Protection</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-dark"><span class="ms" style="font-size:20px">security</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Security & Emergency</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="settings-section-label">System</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-indigo"><span class="ms" style="font-size:20px">language</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Language & Input</div><div class="settings-row-sub">English (US)</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-teal"><span class="ms" style="font-size:20px">date_range</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Date & Time</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-purple"><span class="ms" style="font-size:20px">accessibility</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Accessibility</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-gray"><span class="ms" style="font-size:20px">tune</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Additional Settings</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">system_update</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Software Update</div><div class="settings-row-sub">MEUI OS 1.0 · Up to date</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== SUB PAGES ======== -->
+
+    <!-- About sub -->
+    <div class="settings-sub" id="sub-about">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">About Phone</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="about-hero">
+          <div class="about-logo-big">ME<span>UI</span></div>
+          <div class="about-version">MEUI OS 1.0 · Based on Android 15</div>
+          <div class="about-device-name">MEUI Phone One</div>
+        </div>
+        <div class="settings-section-label">Device Info</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Model</div><div class="settings-row-sub">MEUI Phone One</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">MEUI Version</div><div class="settings-row-sub">1.0.0</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Android Version</div><div class="settings-row-sub">15</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Security Patch</div><div class="settings-row-sub">March 2026</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Build Number</div><div class="settings-row-sub">MEUI.1.0.000.0.R</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Browser</div><div class="settings-row-sub" id="about-browser">—</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallpaper sub — FULL wallpaper system -->
+    <div class="settings-sub" id="sub-wallpaper">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Wallpaper</div>
+      </div>
+      <div class="settings-scroll">
+        <!-- Live preview card -->
+        <div class="wp-preview-card">
+          <div class="wp-preview-phone">
+            <div class="wp-preview-screen" id="wp-preview-screen"></div>
+            <div class="wp-preview-overlay">
+              <div style="font-size:28px;font-weight:300;color:#fff;text-align:center;line-height:1;">12:00</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.65);text-align:center;margin-top:4px;">Preview</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Apply target tabs -->
+        <div class="wp-tabs" id="wp-tabs">
+          <div class="wp-tab active" data-target="both">Both</div>
+          <div class="wp-tab" data-target="home">Home</div>
+          <div class="wp-tab" data-target="lock">Lock</div>
+        </div>
+
+        <div class="settings-section-label">System Wallpapers</div>
+        <!-- Wallpaper grid — 8 abstract CSS wallpapers -->
+        <div class="wp-grid" id="wp-grid">
+          <!-- rendered by JS -->
+        </div>
+
+        <div class="settings-section-label">Custom</div>
+        <div class="settings-group">
+          <div class="settings-row" id="wp-upload-btn" style="cursor:pointer">
+            <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">add_photo_alternate</span></div>
+            <div class="settings-row-text"><div class="settings-row-label">Upload from device</div><div class="settings-row-sub">JPG, PNG, WebP</div></div>
+            <input type="file" id="wp-file-input" accept="image/*" style="display:none">
+          </div>
+        </div>
+
+        <div style="height:20px;"></div>
+        <button class="wp-apply-btn" id="wp-apply-btn">Apply Wallpaper</button>
+        <div style="height:32px;"></div>
+      </div>
+    </div>
+
+    <!-- Display sub -->
+    <div class="settings-sub" id="sub-display">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Display & Brightness</div>
+      </div>
+      <div class="settings-scroll">
+        <div style="margin:0 0 16px;height:80px;background:var(--meui-card);border:1px solid var(--meui-border);border-radius:16px;display:flex;align-items:center;justify-content:center;">
+          <div style="font-size:36px;font-weight:300;color:#fff;" id="disp-preview-time">12:00</div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-row" style="flex-wrap:wrap;gap:8px;cursor:default">
+            <div class="settings-row-text"><div class="settings-row-label">Brightness</div></div>
+            <div style="flex:1;min-width:120px;"><input type="range" class="cc-slider-input" min="0" max="100" value="70" style="width:100%"></div>
+          </div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Adaptive Brightness</div></div><div class="toggle on"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Dark Mode</div></div><div class="toggle on"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Always-On Display</div></div><div class="toggle"></div></div>
+          <div class="settings-row" style="cursor:default">
+            <div class="settings-row-text"><div class="settings-row-label">Refresh Rate</div></div>
+            <div class="settings-row-right" style="font-size:13px;color:var(--meui-text-dim)">120Hz</div>
+          </div>
+          <div class="settings-row" style="cursor:default">
+            <div class="settings-row-text"><div class="settings-row-label">Font Size</div></div>
+            <div class="settings-row-right" style="font-size:13px;color:var(--meui-text-dim)">Default</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sound sub -->
+    <div class="settings-sub" id="sub-sound">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Sound & Vibration</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="settings-group">
+          <div class="settings-row" style="flex-wrap:wrap;gap:8px;cursor:default">
+            <div style="display:flex;align-items:center;gap:8px;width:100%">
+              <span class="ms" style="font-size:20px;color:var(--meui-text-dim)">ring_volume</span>
+              <div class="settings-row-text"><div class="settings-row-label">Ringtone</div></div>
+            </div>
+            <input type="range" class="cc-slider-input" min="0" max="100" value="80" style="width:100%">
+          </div>
+          <div class="settings-row" style="flex-wrap:wrap;gap:8px;cursor:default">
+            <div style="display:flex;align-items:center;gap:8px;width:100%">
+              <span class="ms" style="font-size:20px;color:var(--meui-text-dim)">media_bluetooth_on</span>
+              <div class="settings-row-text"><div class="settings-row-label">Media</div></div>
+            </div>
+            <input type="range" class="cc-slider-input" min="0" max="100" value="60" style="width:100%">
+          </div>
+          <div class="settings-row" style="flex-wrap:wrap;gap:8px;cursor:default">
+            <div style="display:flex;align-items:center;gap:8px;width:100%">
+              <span class="ms" style="font-size:20px;color:var(--meui-text-dim)">notifications_active</span>
+              <div class="settings-row-text"><div class="settings-row-label">Notification</div></div>
+            </div>
+            <input type="range" class="cc-slider-input" min="0" max="100" value="70" style="width:100%">
+          </div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Vibration & Haptics</div></div><div class="toggle on"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">System Sounds</div></div><div class="toggle on"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wi-Fi sub -->
+    <div class="settings-sub" id="sub-wifi">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Wi-Fi</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Wi-Fi</div></div><div class="toggle on"></div></div>
+        </div>
+        <div class="settings-section-label">Connected</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default">
+            <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">wifi</span></div>
+            <div class="settings-row-text"><div class="settings-row-label">HomeNetwork_5G</div><div class="settings-row-sub">Secured · Connected</div></div>
+            <div class="settings-row-right" style="font-size:12px;color:var(--meui-blue-light)">●</div>
+          </div>
+        </div>
+        <div class="settings-section-label">Available</div>
+        <div class="settings-group">
+          <div class="settings-row"><div class="settings-row-text"><div class="settings-row-label">MEUI_Guest</div><div class="settings-row-sub">Secured</div></div></div>
+          <div class="settings-row"><div class="settings-row-text"><div class="settings-row-label">AndroidAP</div><div class="settings-row-sub">Open</div></div></div>
+          <div class="settings-row"><div class="settings-row-text"><div class="settings-row-label">Xiaomi_Router_6E</div><div class="settings-row-sub">Secured</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIN sub -->
+    <div class="settings-sub" id="sub-pin">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Passwords & Security</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="settings-section-label">Screen Lock</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Screen Lock Type</div></div><div class="settings-row-right" style="font-size:13px;color:var(--meui-text-dim)">PIN</div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Require Unlock</div></div><div class="toggle on"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Fingerprint Unlock</div></div><div class="toggle"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Face Unlock</div></div><div class="toggle"></div></div>
+        </div>
+        <div class="settings-section-label">Info</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Default PIN</div><div class="settings-row-sub" style="color:var(--meui-blue-light);font-weight:600;">1234</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Placeholder sub -->
+    <!-- Home Screen sub -->
+    <div class="settings-sub" id="sub-homescreen">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Home Screen</div>
+      </div>
+      <div class="settings-scroll">
+
+        <!-- Icon preview -->
+        <div style="display:flex;justify-content:center;gap:12px;padding:20px 0 8px;">
+          <div class="app-icon" style="pointer-events:none;">
+            <div class="app-icon-img ic-blue" id="icon-preview-1">P<img src="icons/phone.png" alt="" onerror="this.classList.add('err')"></div>
+            <span class="app-icon-label">Phone</span>
+          </div>
+          <div class="app-icon" style="pointer-events:none;">
+            <div class="app-icon-img ic-green" id="icon-preview-2">M<img src="icons/messages.png" alt="" onerror="this.classList.add('err')"></div>
+            <span class="app-icon-label">Messages</span>
+          </div>
+          <div class="app-icon" style="pointer-events:none;">
+            <div class="app-icon-img ic-gray" id="icon-preview-3">C<img src="icons/camera.png" alt="" onerror="this.classList.add('err')"></div>
+            <span class="app-icon-label">Camera</span>
+          </div>
+          <div class="app-icon" style="pointer-events:none;">
+            <div class="app-icon-img ic-orange" id="icon-preview-4">G<img src="icons/gallery.png" alt="" onerror="this.classList.add('err')"></div>
+            <span class="app-icon-label">Gallery</span>
+          </div>
+        </div>
+
+        <div class="settings-section-label">Icon Size</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default;flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+              <div class="settings-row-label">Icon Size</div>
+              <div style="font-size:13px;color:var(--meui-blue-light);font-weight:600;" id="icon-size-val">60px</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;width:100%;">
+              <span style="font-size:11px;color:var(--meui-text-dim);">Small</span>
+              <input type="range" class="cc-slider-input" id="slider-icon-size"
+                min="44" max="80" value="60" step="2" style="flex:1;">
+              <span style="font-size:11px;color:var(--meui-text-dim);">Large</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section-label">Icon Shape</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default;flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+              <div class="settings-row-label">Corner Radius</div>
+              <div style="font-size:13px;color:var(--meui-blue-light);font-weight:600;" id="icon-radius-val">16px</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;width:100%;">
+              <span style="font-size:11px;color:var(--meui-text-dim);">Square</span>
+              <input type="range" class="cc-slider-input" id="slider-icon-radius"
+                min="0" max="30" value="16" step="1" style="flex:1;">
+              <span style="font-size:11px;color:var(--meui-text-dim);">Circle</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-section-label">Icon Label</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default;">
+            <div class="settings-row-text"><div class="settings-row-label">Show App Name</div></div>
+            <div class="toggle on" id="tog-icon-label"></div>
+          </div>
+        </div>
+
+        <!-- Reset -->
+        <div style="height:16px;"></div>
+        <button class="wp-apply-btn" id="icon-reset-btn"
+          style="background:rgba(255,255,255,0.08);color:var(--meui-text);">
+          Reset to Default
+        </button>
+        <div style="height:32px;"></div>
+      </div>
+    </div>
+
+    <div class="settings-sub" id="sub-placeholder">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title" id="placeholder-title">Settings</div>
+      </div>
+      <div class="settings-scroll">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;gap:12px;">
+          <span class="ms" style="font-size:56px;color:var(--meui-text-dim)">construction</span>
+          <div style="color:var(--meui-text);font-size:16px;font-weight:500;">Coming Soon</div>
+          <div style="color:var(--meui-text-dim);font-size:13px;text-align:center;max-width:220px;">This settings page will be built in a future update.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end settings-screen -->
+
+  <!-- App Launcher Layer -->
+  <div id="app-launcher"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+</div><!-- end phone-shell -->
+</div><!-- end phone-shell-wrap -->
+
+<!-- JS — urutan penting: state dulu, lalu modul, lalu main -->
+<script src="js/state.js"></script>
+<script src="js/clock.js"></script>
+<script src="js/lock.js"></script>
+<script src="js/cc.js"></script>
+<script src="js/launcher.js"></script>
+<script src="js/wallpaper.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/pages.js"></script>
 <script src="js/scale.js"></script>
 </body>
 </html>
