@@ -813,6 +813,2350 @@ body.app-open #gesture-bottom::before {
 @media (max-height: 860px) {
   :root { --phone-h: 780px; --phone-w: 360px; }
 }
+
+/* ===================== RESPONSIVE AUTO-SCALE ===================== */
+/*
+  Simulator selalu 390×844px secara internal.
+  Tapi di layar kecil, kita scale DOWN supaya muat.
+  Pakai CSS transform scale — tidak mengubah layout internal,
+  hanya mengecilkan tampilan visual.
+*/
+@media (max-width: 420px) {
+  html, body {
+    width: 100vw; height: 100dvh;
+    overflow: hidden;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  #phone-shell {
+    /* Reset ukuran ke fixed 390×844 */
+    width: 390px !important;
+    height: 844px !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    /* Scale down supaya muat di layar */
+    transform-origin: top center;
+    transform: scale(var(--shell-scale, 1));
+    margin: 0 auto;
+  }
+}
+</style>
+<script>
+/* Hitung scale factor saat load dan resize */
+function fitShell() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  if (vw <= 420) {
+    const scaleW = vw / 390;
+    const scaleH = vh / 844;
+    const scale  = Math.min(scaleW, scaleH, 1); /* max 1x, tidak diperbesar */
+    document.documentElement.style.setProperty('--shell-scale', scale);
+    /* Geser body supaya simulator tetap centered */
+    const shell = document.getElementById('phone-shell');
+    if (shell) {
+      shell.style.marginTop = ((vh - 844 * scale) / 2) + 'px';
+    }
+  }
+}
+window.addEventListener('resize', fitShell);
+/* Jalankan setelah DOM siap */
+document.addEventListener('DOMContentLoaded', fitShell);
+window.addEventListener('load', fitShell);
+</script>
+</head>
+<body>
+
+<div id="phone-shell">
+
+  <!-- Dynamic Island -->
+  <div id="dynamic-island">
+    <div class="di-camera"></div>
+  </div>
+
+  <!-- Gesture Zones -->
+  <div id="gesture-top" id="gesture-top"></div>
+  <div id="gesture-bottom"></div>
+
+  <!-- ==================== BOOT SCREEN ==================== -->
+  <div class="screen-layer" id="boot-screen">
+    <div class="boot-logo">ME<span>UI</span></div>
+    <div class="boot-bottom-group">
+      <div class="boot-powered">
+        <svg class="boot-android-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.523 15.341a5.474 5.474 0 0 1-2.01 2.01l1.56 2.7a.5.5 0 0 1-.183.683.5.5 0 0 1-.683-.183l-1.58-2.734a5.467 5.467 0 0 1-5.254 0L7.793 20.55a.5.5 0 0 1-.683-.183.5.5 0 0 1 .183-.683l1.56-2.7A5.474 5.474 0 0 1 6.84 15H2a.5.5 0 0 1-.5-.5v-6A.5.5 0 0 1 2 8h20a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5h-4.477zM2.5 8.5v5.5h19V8.5H2.5zM12 3.5a6.48 6.48 0 0 0-4.843 2.158l-.707-.707A7.478 7.478 0 0 1 12 2.5a7.478 7.478 0 0 1 5.55 2.451l-.707.707A6.48 6.48 0 0 0 12 3.5zm-3 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm6 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
+        <span class="boot-powered-text">Powered by Android</span>
+      </div>
+      <div class="boot-bar-wrap"><div class="boot-bar"></div></div>
+    </div>
+  </div>
+
+  <!-- ==================== LOCK SCREEN ==================== -->
+  <div class="screen-layer hidden" id="lock-screen">
+    <div class="ls-blob ls-blob-1"></div>
+    <div class="ls-blob ls-blob-2"></div>
+    <div class="status-bar">
+      <span id="ls-time-small">12:00</span>
+      <div class="status-icons">
+        <span class="si">▲</span>
+        <span class="si">WiFi</span>
+        <span class="si">🔋</span>
+      </div>
+    </div>
+    <div class="lock-clock-wrap">
+      <div class="lock-time" id="lock-time">12:00</div>
+      <div class="lock-date" id="lock-date">Monday, January 1</div>
+    </div>
+    <div class="lock-notifications">
+      <div class="lock-notif">
+        <div class="ln-icon ic-blue">💬</div>
+        <div class="ln-text">
+          <div class="ln-app">Messages</div>
+          <div class="ln-msg">Hey, are you available later?</div>
+        </div>
+      </div>
+      <div class="lock-notif">
+        <div class="ln-icon ic-red">📧</div>
+        <div class="ln-text">
+          <div class="ln-app">Mail</div>
+          <div class="ln-msg">Your report has been reviewed.</div>
+        </div>
+      </div>
+    </div>
+    <div class="lock-bottom">
+      <div class="lock-shortcuts">
+        <div class="lock-shortcut" id="lock-flashlight">🔦</div>
+        <div class="lock-shortcut" id="lock-camera">📷</div>
+      </div>
+      <div class="lock-swipe-hint">
+        <span class="swipe-arrow">↑</span>
+        <span>Swipe up to unlock</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PIN SCREEN ==================== -->
+  <div class="screen-layer hidden" id="pin-screen">
+    <div class="pin-screen-bg-blur"></div>
+    <div class="pin-wrap">
+      <div class="pin-label" id="pin-label">Enter PIN</div>
+      <div class="pin-dots" id="pin-dots">
+        <div class="pin-dot" id="d0"></div>
+        <div class="pin-dot" id="d1"></div>
+        <div class="pin-dot" id="d2"></div>
+        <div class="pin-dot" id="d3"></div>
+      </div>
+      <div class="pin-pad">
+        <div class="pin-key" data-k="1"><span class="pin-key-num">1</span></div>
+        <div class="pin-key" data-k="2"><span class="pin-key-num">2</span><span class="pin-key-sub">ABC</span></div>
+        <div class="pin-key" data-k="3"><span class="pin-key-num">3</span><span class="pin-key-sub">DEF</span></div>
+        <div class="pin-key" data-k="4"><span class="pin-key-num">4</span><span class="pin-key-sub">GHI</span></div>
+        <div class="pin-key" data-k="5"><span class="pin-key-num">5</span><span class="pin-key-sub">JKL</span></div>
+        <div class="pin-key" data-k="6"><span class="pin-key-num">6</span><span class="pin-key-sub">MNO</span></div>
+        <div class="pin-key" data-k="7"><span class="pin-key-num">7</span><span class="pin-key-sub">PQRS</span></div>
+        <div class="pin-key" data-k="8"><span class="pin-key-num">8</span><span class="pin-key-sub">TUV</span></div>
+        <div class="pin-key" data-k="9"><span class="pin-key-num">9</span><span class="pin-key-sub">WXYZ</span></div>
+        <div class="pin-key key-empty"></div>
+        <div class="pin-key" data-k="0"><span class="pin-key-num">0</span></div>
+        <div class="pin-key key-del" id="pin-del">
+          <svg viewBox="0 0 24 24"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HOME SCREEN ==================== -->
+  <div class="screen-layer hidden" id="home-screen">
+    <div class="home-status">
+      <span id="hs-time">12:00</span>
+      <div class="home-status-icons">
+        <span class="si" style="font-size:11px">▲</span>
+        <span class="si" style="font-size:11px">WiFi</span>
+        <span class="si" style="font-size:11px">100%</span>
+      </div>
+    </div>
+
+    <!-- Clock Widget -->
+    <div class="home-clock-widget">
+      <div class="hcw-left">
+        <div class="hcw-time" id="hw-time">12:00</div>
+        <div class="hcw-date" id="hw-date">Mon, Jan 1</div>
+      </div>
+      <div class="hcw-right">
+        <div class="hcw-weather">⛅</div>
+        <div class="hcw-temp">—°C</div>
+      </div>
+    </div>
+
+    <!-- App Grid -->
+    <div class="app-grid-scroll" id="app-grid-scroll">
+      <div id="app-pages-container">
+
+      <!-- Page 1 -->
+      <div class="app-page" id="app-page-1">
+        <div class="app-icon" data-app="phone">
+          <div class="app-icon-img ic-green ic-pad">P<img src="icons/phone.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Phone</span>
+        </div>
+        <div class="app-icon" data-app="messages">
+          <div class="app-icon-img ic-blue ic-pad">M<img src="icons/messages.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Messages</span>
+        </div>
+        <div class="app-icon" data-app="camera">
+          <div class="app-icon-img ic-gray ic-pad">C<img src="icons/camera.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Camera</span>
+        </div>
+        <div class="app-icon" data-app="gallery">
+          <div class="app-icon-img ic-orange ic-pad">G<img src="icons/gallery.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Gallery</span>
+        </div>
+        <div class="app-icon" data-app="browser">
+          <div class="app-icon-img ic-blue ic-pad">B<img src="icons/browser.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Browser</span>
+        </div>
+        <div class="app-icon" data-app="maps">
+          <div class="app-icon-img ic-teal ic-pad">M<img src="icons/maps.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Maps</span>
+        </div>
+        <div class="app-icon" data-app="music">
+          <div class="app-icon-img ic-purple ic-pad">M<img src="icons/music.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Music</span>
+        </div>
+        <div class="app-icon" data-app="calendar">
+          <div class="app-icon-img ic-red ic-pad">C<img src="icons/calendar.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Calendar</span>
+        </div>
+        <div class="app-icon" data-app="mail">
+          <div class="app-icon-img ic-indigo ic-pad">M<img src="icons/mail.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Mail</span>
+        </div>
+        <div class="app-icon" data-app="notes">
+          <div class="app-icon-img ic-yellow ic-pad">N<img src="icons/notes.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Notes</span>
+        </div>
+        <div class="app-icon" data-app="clock">
+          <div class="app-icon-img ic-dark ic-pad">C<img src="icons/clock.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Clock</span>
+        </div>
+        <div class="app-icon" data-app="calculator">
+          <div class="app-icon-img ic-dark ic-pad">Ca<img src="icons/calculator.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Calculator</span>
+        </div>
+        <div class="app-icon" data-app="files">
+          <div class="app-icon-img ic-lime ic-pad">F<img src="icons/files.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Files</span>
+        </div>
+        <div class="app-icon" data-app="weather">
+          <div class="app-icon-img ic-teal ic-pad">W<img src="icons/weather.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Weather</span>
+        </div>
+        <div class="app-icon" data-app="scanner">
+          <div class="app-icon-img ic-pink ic-pad">S<img src="icons/scanner.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Scanner</span>
+        </div>
+        <div class="app-icon" data-app="settings">
+          <div class="app-icon-img ic-gray ic-pad">Se<img src="icons/settings.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Settings</span>
+        </div>
+      </div>
+
+      <!-- Page 2 — Root Tools -->
+      <div class="app-page" id="app-page-2">
+        <div class="app-icon" data-app="magisk">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a1a1a,#2d2d2d);">Mg<img src="icons/magisk.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Magisk</span>
+        </div>
+        <div class="app-icon" data-app="owl">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1c1a2e,#2e2060);">Ow<img src="icons/owl.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Owl</span>
+        </div>
+        <div class="app-icon" data-app="kernelsu">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#0a1628,#1a3a6e);">K<img src="icons/kernelsu.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">KernelSU</span>
+        </div>
+        <div class="app-icon" data-app="termux">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#0d1117,#1f2937);">Tx<img src="icons/termux.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Termux</span>
+        </div>
+        <div class="app-icon" data-app="adb">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a0a2e,#3b1a6b);">A<img src="icons/adb.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">ADB</span>
+        </div>
+        <div class="app-icon" data-app="xposed">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a1200,#4a3500);">L<img src="icons/lsposed.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">LSPosed</span>
+        </div>
+        <div class="app-icon" data-app="playstore">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a3a1a,#1a7a3a);">P<img src="icons/playstore.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Play Store</span>
+        </div>
+        <div class="app-icon" data-app="youtube">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a0000,#cc0000);">Y<img src="icons/youtube.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">YouTube</span>
+        </div>
+        <div class="app-icon" data-app="google">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#1a1a3a,#ffffff22);background-color:#fff;">G<img src="icons/google.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Google</span>
+        </div>
+        <div class="app-icon" data-app="minecraft">
+          <div class="app-icon-img ic-pad" style="background:linear-gradient(140deg,#2d4a1a,#4a7a2a);">MC<img src="icons/mc.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+          <span class="app-icon-label">Minecraft</span>
+        </div>
+      </div>
+
+      <!-- Page indicator dots -->
+      </div><!-- end app-pages-container -->
+      <div class="page-dots" id="page-dots">
+        <div class="page-dot active" data-page="0"></div>
+        <div class="page-dot" data-page="1"></div>
+      </div>
+    </div>
+
+    <!-- Dock -->
+    <div class="home-dock">
+      <div class="dock-bar">
+        <div class="app-icon" data-app="phone" style="padding:4px;">
+          <div class="app-icon-img ic-green ic-pad" style="width:54px;height:54px;">P<img src="icons/phone.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+        </div>
+        <div class="app-icon" data-app="messages" style="padding:4px;">
+          <div class="app-icon-img ic-blue ic-pad" style="width:54px;height:54px;">M<img src="icons/messages.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+        </div>
+        <div class="app-icon" data-app="camera" style="padding:4px;">
+          <div class="app-icon-img ic-gray ic-pad" style="width:54px;height:54px;">C<img src="icons/camera.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+        </div>
+        <div class="app-icon" data-app="browser" style="padding:4px;">
+          <div class="app-icon-img ic-blue ic-pad" style="width:54px;height:54px;">B<img src="icons/browser.png" alt="" onload="this.closest('.ic-pad') && this.closest('.app-icon-img').classList.add('img-loaded')" onerror="this.classList.add('err')"></div>
+        </div>
+      </div>
+    </div>
+    <div class="home-indicator"><div class="hi-bar"></div></div>
+  </div>
+
+  <!-- ==================== CONTROL CENTER ==================== -->
+  <div id="control-center">
+    <div class="cc-handle"></div>
+    <div class="cc-status-row">
+      <span id="cc-time">12:00</span>
+      <span id="cc-date-str">Mon, Jan 1</span>
+    </div>
+
+    <!-- Toggles -->
+    <div class="cc-grid">
+      <div class="cc-tile on" id="cc-wifi" data-cc="wifi">
+        <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+        <span class="cc-tile-label">Wi-Fi</span>
+      </div>
+      <div class="cc-tile on" id="cc-bt" data-cc="bt">
+        <svg viewBox="0 0 24 24"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z"/></svg>
+        <span class="cc-tile-label">Bluetooth</span>
+      </div>
+      <div class="cc-tile" id="cc-airplane" data-cc="airplane">
+        <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+        <span class="cc-tile-label">Airplane</span>
+      </div>
+      <div class="cc-tile" id="cc-dnd" data-cc="dnd">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>
+        <span class="cc-tile-label">DND</span>
+      </div>
+      <div class="cc-tile" id="cc-rotation" data-cc="rotation">
+        <svg viewBox="0 0 24 24"><path d="M16.48 2.52c3.27 1.55 5.61 4.72 5.97 8.48h1.5C23.44 4.84 18.29 0 12 0l-.66.03 3.81 3.81 1.33-1.32zm-6.25-.77c-.59-.59-1.54-.59-2.12 0L1.75 8.11c-.59.59-.59 1.54 0 2.12l12.02 12.02c.59.59 1.54.59 2.12 0l6.36-6.36c.59-.59.59-1.54 0-2.12L10.23 1.75zm4.6 19.44L2.81 9.17l6.36-6.36 12.02 12.02-6.36 6.36zm-7.31.29C4.25 19.94 1.91 16.76 1.55 13H.05C.56 19.16 5.71 24 12 24l.66-.03-3.81-3.81-1.33 1.32z"/></svg>
+        <span class="cc-tile-label">Rotation</span>
+      </div>
+      <div class="cc-tile" id="cc-hotspot" data-cc="hotspot">
+        <svg viewBox="0 0 24 24"><path d="M12 11c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 2.22 1.21 4.15 3 5.19l1-1.74c-1.19-.7-2-1.97-2-3.45 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.48-.81 2.75-2 3.45l1 1.74c1.79-1.04 3-2.97 3-5.19zM12 3C6.48 3 2 7.48 2 13c0 3.7 2.01 6.92 4.99 8.65l1-1.73C5.61 18.53 4 15.96 4 13c0-4.42 3.58-8 8-8s8 3.58 8 8c0 2.96-1.61 5.53-4 6.92l1 1.73C19.99 19.92 22 16.7 22 13c0-5.52-4.48-10-10-10z"/></svg>
+        <span class="cc-tile-label">Hotspot</span>
+      </div>
+      <div class="cc-tile" id="cc-torch" data-cc="torch">
+        <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+        <span class="cc-tile-label">Flashlight</span>
+      </div>
+      <div class="cc-tile on" id="cc-sound" data-cc="sound">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        <span class="cc-tile-label">Sound</span>
+      </div>
+    </div>
+
+    <!-- Sliders -->
+    <div class="cc-slider-row">
+      <div class="cc-slider-block">
+        <svg viewBox="0 0 24 24"><path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
+        <input type="range" class="cc-slider-input" id="cc-brightness" min="0" max="100" value="70">
+      </div>
+      <div class="cc-slider-block">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        <input type="range" class="cc-slider-input" id="cc-volume" min="0" max="100" value="60">
+      </div>
+    </div>
+
+    <!-- Media -->
+    <div class="cc-media">
+      <div class="cc-media-cover">🎵</div>
+      <div class="cc-media-info">
+        <div class="cc-media-title">Not Playing</div>
+        <div class="cc-media-sub">—</div>
+      </div>
+      <div class="cc-media-controls">
+        <div class="cc-media-btn">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </div>
+        <div class="cc-media-btn">
+          <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+        </div>
+        <div class="cc-media-btn">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SETTINGS SCREEN ==================== -->
+  <div id="settings-screen">
+    <!-- Main Settings Page -->
+    <div class="settings-topbar" style="padding-bottom:4px;">
+      <div class="settings-back-btn" id="settings-close-btn">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </div>
+      <div class="settings-title">Settings</div>
+    </div>
+
+    <!-- Profile card — HyperOS 2 style -->
+    <div style="margin:0 16px 8px;background:var(--meui-card);border:1px solid var(--meui-border);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;">
+      <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#7C3AED);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span class="ms" style="font-size:28px">person</span>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:600;color:var(--meui-text)">Xiaomi Account</div>
+        <div style="font-size:12px;color:var(--meui-text-dim);margin-top:2px;">Sign in to sync data</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--meui-text-faint)"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </div>
+
+    <div class="settings-scroll">
+      <!-- My Device -->
+      <div class="settings-section-label">My Device</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-about">
+          <div class="settings-row-icon" style="background:linear-gradient(140deg,#0f2027,#2c5364)"><span class="ms" style="font-size:20px">phone_android</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">About Phone</div>
+            <div class="settings-row-sub">MEUI Phone One · MEUI OS 1.0</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Network & Connectivity -->
+      <div class="settings-section-label">Network & Connectivity</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-wifi">
+          <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">wifi</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Wi-Fi</div>
+            <div class="settings-row-sub">HomeNetwork_5G</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-teal"><span class="ms" style="font-size:20px">signal_cellular_alt</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">SIM Cards & Mobile Networks</div>
+            <div class="settings-row-sub">SIM 1 · 4G LTE</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-purple"><span class="ms" style="font-size:20px">bluetooth</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Bluetooth</div></div>
+          <div class="settings-row-right">
+            <span style="font-size:12px;color:var(--meui-text-dim);margin-right:6px">On</span>
+            <div class="toggle on" id="tog-bt"></div>
+          </div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon" style="background:linear-gradient(140deg,#1a3a6e,#3b6fd4)"><span class="ms" style="font-size:20px">nfc</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">NFC & Contactless Payments</div></div>
+          <div class="settings-row-right"><div class="toggle" id="tog-nfc"></div></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-orange"><span class="ms" style="font-size:20px">wifi_tethering</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Hotspot & Tethering</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Display & Brightness -->
+      <div class="settings-section-label">Display</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-display">
+          <div class="settings-row-icon ic-yellow"><span class="ms" style="font-size:20px">sunny</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Display & Brightness</div>
+            <div class="settings-row-sub">Always-on display, font size, refresh rate</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-wallpaper">
+          <div class="settings-row-icon ic-indigo"><span class="ms" style="font-size:20px">wallpaper</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Wallpaper</div>
+            <div class="settings-row-sub">Home screen & lock screen</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-purple"><span class="ms" style="font-size:20px">lock_clock</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Lock Screen</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Sound & Vibration -->
+      <div class="settings-section-label">Sound & Vibration</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-sound">
+          <div class="settings-row-icon ic-orange"><span class="ms" style="font-size:20px">volume_up</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Sound & Vibration</div>
+            <div class="settings-row-sub">Ringtone, media, notifications</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-pink"><span class="ms" style="font-size:20px">notifications</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Notifications & Control Center</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Apps -->
+      <div class="settings-section-label">Apps</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-green"><span class="ms" style="font-size:20px">apps</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Manage Apps</div><div class="settings-row-sub">Permissions, defaults, storage</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-teal"><span class="ms" style="font-size:20px">home</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Home Screen</div><div class="settings-row-sub">Layout, icon size, dock</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Battery -->
+      <div class="settings-section-label">Battery & Performance</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-lime"><span class="ms" style="font-size:20px">battery_full</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Battery</div><div class="settings-row-sub">100% · Charging</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">memory</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Storage</div><div class="settings-row-sub">128 GB · 64 GB used</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Privacy & Security -->
+      <div class="settings-section-label">Privacy & Security</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-pin">
+          <div class="settings-row-icon ic-red"><span class="ms" style="font-size:20px">lock</span></div>
+          <div class="settings-row-text">
+            <div class="settings-row-label">Passwords & Security</div>
+            <div class="settings-row-sub" id="pin-status-text">Screen lock · PIN</div>
+          </div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-gray"><span class="ms" style="font-size:20px">privacy_tip</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Privacy Protection</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-dark"><span class="ms" style="font-size:20px">security</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Security & Emergency</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+
+      <!-- System -->
+      <div class="settings-section-label">System</div>
+      <div class="settings-group">
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-indigo"><span class="ms" style="font-size:20px">language</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Language & Input</div><div class="settings-row-sub">English (US)</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-teal"><span class="ms" style="font-size:20px">date_range</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Date & Time</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-purple"><span class="ms" style="font-size:20px">accessibility</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Accessibility</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-gray"><span class="ms" style="font-size:20px">tune</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Additional Settings</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+        <div class="settings-row" data-sub="sub-placeholder">
+          <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">system_update</span></div>
+          <div class="settings-row-text"><div class="settings-row-label">Software Update</div><div class="settings-row-sub">MEUI OS 1.0 · Up to date</div></div>
+          <div class="settings-row-right"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======== SUB PAGES ======== -->
+
+    <!-- About sub -->
+    <div class="settings-sub" id="sub-about">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">About Phone</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="about-hero">
+          <div class="about-logo-big">ME<span>UI</span></div>
+          <div class="about-version">MEUI OS 1.0 · Based on Android 15</div>
+          <div class="about-device-name">MEUI Phone One</div>
+        </div>
+        <div class="settings-section-label">Device Info</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Model</div><div class="settings-row-sub">MEUI Phone One</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">MEUI Version</div><div class="settings-row-sub">1.0.0</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Android Version</div><div class="settings-row-sub">15</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Security Patch</div><div class="settings-row-sub">March 2026</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Build Number</div><div class="settings-row-sub">MEUI.1.0.000.0.R</div></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Browser</div><div class="settings-row-sub" id="about-browser">—</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallpaper sub — FULL wallpaper system -->
+    <div class="settings-sub" id="sub-wallpaper">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Wallpaper</div>
+      </div>
+      <div class="settings-scroll">
+        <!-- Live preview card -->
+        <div class="wp-preview-card">
+          <div class="wp-preview-phone">
+            <div class="wp-preview-screen" id="wp-preview-screen"></div>
+            <div class="wp-preview-overlay">
+              <div style="font-size:28px;font-weight:300;color:#fff;text-align:center;line-height:1;">12:00</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.65);text-align:center;margin-top:4px;">Preview</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Apply target tabs -->
+        <div class="wp-tabs" id="wp-tabs">
+          <div class="wp-tab active" data-target="both">Both</div>
+          <div class="wp-tab" data-target="home">Home</div>
+          <div class="wp-tab" data-target="lock">Lock</div>
+        </div>
+
+        <div class="settings-section-label">System Wallpapers</div>
+        <!-- Wallpaper grid — 8 abstract CSS wallpapers -->
+        <div class="wp-grid" id="wp-grid">
+          <!-- rendered by JS -->
+        </div>
+
+        <div class="settings-section-label">Custom</div>
+        <div class="settings-group">
+          <div class="settings-row" id="wp-upload-btn" style="cursor:pointer">
+            <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">add_photo_alternate</span></div>
+            <div class="settings-row-text"><div class="settings-row-label">Upload from device</div><div class="settings-row-sub">JPG, PNG, WebP</div></div>
+            <input type="file" id="wp-file-input" accept="image/*" style="display:none">
+          </div>
+        </div>
+
+        <div style="height:20px;"></div>
+        <button class="wp-apply-btn" id="wp-apply-btn">Apply Wallpaper</button>
+        <div style="height:32px;"></div>
+      </div>
+    </div>
+
+    <!-- Display sub -->
+    <div class="settings-sub" id="sub-display">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Display & Brightness</div>
+      </div>
+      <div class="settings-scroll">
+        <div style="margin:0 0 16px;height:80px;background:var(--meui-card);border:1px solid var(--meui-border);border-radius:16px;display:flex;align-items:center;justify-content:center;">
+          <div style="font-size:36px;font-weight:300;color:#fff;" id="disp-preview-time">12:00</div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-row" style="flex-wrap:wrap;gap:8px;cursor:default">
+            <div class="settings-row-text"><div class="settings-row-label">Brightness</div></div>
+            <div style="flex:1;min-width:120px;"><input type="range" class="cc-slider-input" min="0" max="100" value="70" style="width:100%"></div>
+          </div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Adaptive Brightness</div></div><div class="toggle on"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Dark Mode</div></div><div class="toggle on"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Always-On Display</div></div><div class="toggle"></div></div>
+          <div class="settings-row" style="cursor:default">
+            <div class="settings-row-text"><div class="settings-row-label">Refresh Rate</div></div>
+            <div class="settings-row-right" style="font-size:13px;color:var(--meui-text-dim)">120Hz</div>
+          </div>
+          <div class="settings-row" style="cursor:default">
+            <div class="settings-row-text"><div class="settings-row-label">Font Size</div></div>
+            <div class="settings-row-right" style="font-size:13px;color:var(--meui-text-dim)">Default</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sound sub -->
+    <div class="settings-sub" id="sub-sound">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Sound & Vibration</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="settings-group">
+          <div class="settings-row" style="flex-wrap:wrap;gap:8px;cursor:default">
+            <div style="display:flex;align-items:center;gap:8px;width:100%">
+              <span class="ms" style="font-size:20px;color:var(--meui-text-dim)">ring_volume</span>
+              <div class="settings-row-text"><div class="settings-row-label">Ringtone</div></div>
+            </div>
+            <input type="range" class="cc-slider-input" min="0" max="100" value="80" style="width:100%">
+          </div>
+          <div class="settings-row" style="flex-wrap:wrap;gap:8px;cursor:default">
+            <div style="display:flex;align-items:center;gap:8px;width:100%">
+              <span class="ms" style="font-size:20px;color:var(--meui-text-dim)">media_bluetooth_on</span>
+              <div class="settings-row-text"><div class="settings-row-label">Media</div></div>
+            </div>
+            <input type="range" class="cc-slider-input" min="0" max="100" value="60" style="width:100%">
+          </div>
+          <div class="settings-row" style="flex-wrap:wrap;gap:8px;cursor:default">
+            <div style="display:flex;align-items:center;gap:8px;width:100%">
+              <span class="ms" style="font-size:20px;color:var(--meui-text-dim)">notifications_active</span>
+              <div class="settings-row-text"><div class="settings-row-label">Notification</div></div>
+            </div>
+            <input type="range" class="cc-slider-input" min="0" max="100" value="70" style="width:100%">
+          </div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Vibration & Haptics</div></div><div class="toggle on"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">System Sounds</div></div><div class="toggle on"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wi-Fi sub -->
+    <div class="settings-sub" id="sub-wifi">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Wi-Fi</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Wi-Fi</div></div><div class="toggle on"></div></div>
+        </div>
+        <div class="settings-section-label">Connected</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default">
+            <div class="settings-row-icon ic-blue"><span class="ms" style="font-size:20px">wifi</span></div>
+            <div class="settings-row-text"><div class="settings-row-label">HomeNetwork_5G</div><div class="settings-row-sub">Secured · Connected</div></div>
+            <div class="settings-row-right" style="font-size:12px;color:var(--meui-blue-light)">●</div>
+          </div>
+        </div>
+        <div class="settings-section-label">Available</div>
+        <div class="settings-group">
+          <div class="settings-row"><div class="settings-row-text"><div class="settings-row-label">MEUI_Guest</div><div class="settings-row-sub">Secured</div></div></div>
+          <div class="settings-row"><div class="settings-row-text"><div class="settings-row-label">AndroidAP</div><div class="settings-row-sub">Open</div></div></div>
+          <div class="settings-row"><div class="settings-row-text"><div class="settings-row-label">Xiaomi_Router_6E</div><div class="settings-row-sub">Secured</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PIN sub -->
+    <div class="settings-sub" id="sub-pin">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title">Passwords & Security</div>
+      </div>
+      <div class="settings-scroll">
+        <div class="settings-section-label">Screen Lock</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Screen Lock Type</div></div><div class="settings-row-right" style="font-size:13px;color:var(--meui-text-dim)">PIN</div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Require Unlock</div></div><div class="toggle on"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Fingerprint Unlock</div></div><div class="toggle"></div></div>
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Face Unlock</div></div><div class="toggle"></div></div>
+        </div>
+        <div class="settings-section-label">Info</div>
+        <div class="settings-group">
+          <div class="settings-row" style="cursor:default"><div class="settings-row-text"><div class="settings-row-label">Default PIN</div><div class="settings-row-sub" style="color:var(--meui-blue-light);font-weight:600;">1234</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Placeholder sub -->
+    <div class="settings-sub" id="sub-placeholder">
+      <div class="settings-topbar">
+        <div class="settings-back-btn sub-back-btn"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+        <div class="settings-title" id="placeholder-title">Settings</div>
+      </div>
+      <div class="settings-scroll">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:300px;gap:12px;">
+          <span class="ms" style="font-size:56px;color:var(--meui-text-dim)">construction</span>
+          <div style="color:var(--meui-text);font-size:16px;font-weight:500;">Coming Soon</div>
+          <div style="color:var(--meui-text-dim);font-size:13px;text-align:center;max-width:220px;">This settings page will be built in a future update.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end settings-screen -->
+
+  <!-- App Launcher Layer -->
+  <div id="app-launcher"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+</div><!-- end phone-shell -->
+
+<script>
+/* =================== STATE =================== */
+const STATE = {
+  screen: 'boot',
+  pin: '1234',
+  pinInput: '',
+  ccOpen: false,
+  settingsOpen: false,
+  wallpaper: 'linear-gradient(160deg,#0D1B3E 0%,#0A0A0F 55%,#1A0A2E 100%)',
+  customWpCss: null,
+};
+
+/* =================== DOM =================== */
+const $ = id => document.getElementById(id);
+const $$ = sel => document.querySelectorAll(sel);
+
+const screens = {
+  boot: $('boot-screen'),
+  lock: $('lock-screen'),
+  pin:  $('pin-screen'),
+  home: $('home-screen'),
+};
+
+/* =================== CLOCK =================== */
+function pad(n) { return String(n).padStart(2,'0'); }
+function updateClocks() {
+  const now = new Date();
+  const h = pad(now.getHours()), m = pad(now.getMinutes());
+  const timeStr = `${h}:${m}`;
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const mShort = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dateStr = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+  const dateShort = `${days[now.getDay()].slice(0,3)}, ${mShort[now.getMonth()]} ${now.getDate()}`;
+
+  // Lock screen
+  $('lock-time').textContent = timeStr;
+  $('ls-time-small').textContent = timeStr;
+  $('lock-date').textContent = dateStr;
+  // Home screen
+  $('hs-time').textContent = timeStr;
+  $('hw-time').textContent = timeStr;
+  $('hw-date').textContent = dateShort;
+  // CC
+  $('cc-time').textContent = timeStr;
+  $('cc-date-str').textContent = dateShort;
+  // Display settings preview
+  $('disp-preview-time').textContent = timeStr;
+}
+updateClocks();
+setInterval(updateClocks, 10000);
+
+/* =================== SCREEN SWITCH =================== */
+function showScreen(name) {
+  Object.entries(screens).forEach(([k, el]) => {
+    if (k === name) {
+      el.classList.remove('hidden', 'gone');
+    } else {
+      el.classList.add('hidden');
+    }
+  });
+  STATE.screen = name;
+}
+
+/* =================== BOOT =================== */
+setTimeout(() => { showScreen('lock'); }, 2800);
+
+/* =================== LOCK SCREEN SWIPE / TAP =================== */
+let touchStartY = 0;
+$('lock-screen').addEventListener('touchstart', e => {
+  touchStartY = e.touches[0].clientY;
+}, {passive:true});
+$('lock-screen').addEventListener('touchend', e => {
+  const dy = touchStartY - e.changedTouches[0].clientY;
+  if (dy > 40) goToPIN();
+}, {passive:true});
+// Also allow click on lower half
+$('lock-screen').addEventListener('click', e => {
+  if (e.clientY > window.innerHeight * 0.55 || e.target.closest('.lock-bottom')) {
+    if (!e.target.closest('#lock-flashlight') && !e.target.closest('#lock-camera')) {
+      goToPIN();
+    }
+  }
+});
+$('lock-flashlight').addEventListener('click', e => {
+  e.stopPropagation();
+  showToast('Flashlight toggled');
+});
+$('lock-camera').addEventListener('click', e => {
+  e.stopPropagation();
+  showToast('Camera (placeholder)');
+});
+
+function goToPIN() {
+  showScreen('pin');
+  resetPinInput();
+}
+
+/* =================== PIN =================== */
+function resetPinInput() {
+  STATE.pinInput = '';
+  updatePinDots();
+  $('pin-label').textContent = 'Enter PIN';
+  $('pin-label').style.color = 'rgba(255,255,255,0.7)';
+}
+
+function updatePinDots() {
+  for(let i=0;i<4;i++){
+    const dot = $(`d${i}`);
+    dot.classList.toggle('filled', i < STATE.pinInput.length);
+  }
+}
+
+$$('.pin-key[data-k]').forEach(key => {
+  key.addEventListener('click', () => {
+    if (STATE.pinInput.length < 4) {
+      STATE.pinInput += key.dataset.k;
+      updatePinDots();
+      if (STATE.pinInput.length === 4) setTimeout(checkPIN, 120);
+    }
+  });
+});
+
+$('pin-del').addEventListener('click', () => {
+  STATE.pinInput = STATE.pinInput.slice(0, -1);
+  updatePinDots();
+});
+
+function checkPIN() {
+  if (STATE.pinInput === STATE.pin) {
+    showScreen('home');
+  } else {
+    $('pin-label').textContent = 'Incorrect PIN';
+    $('pin-label').style.color = '#EF4444';
+    $$('.pin-dot').forEach(d => d.classList.add('shake'));
+    setTimeout(() => {
+      $$('.pin-dot').forEach(d => d.classList.remove('shake'));
+      resetPinInput();
+    }, 600);
+  }
+}
+
+/* =================== CONTROL CENTER =================== */
+const cc = $('control-center');
+
+// Top-edge swipe down opens CC
+let ccTouchY = 0;
+const gestureTop = $('gesture-top');
+gestureTop.addEventListener('touchstart', e => { ccTouchY = e.touches[0].clientY; }, {passive:true});
+gestureTop.addEventListener('touchend', e => {
+  if (STATE.screen === 'home' && !STATE.settingsOpen) {
+    const dy = e.changedTouches[0].clientY - ccTouchY;
+    if (dy > 30) openCC();
+  }
+}, {passive:true});
+
+// Click gesture-top for desktop testing
+gestureTop.addEventListener('click', () => {
+  if (STATE.screen === 'home' && !STATE.settingsOpen) openCC();
+});
+
+function openCC()  { cc.classList.add('open'); STATE.ccOpen = true; }
+function closeCC() { cc.classList.remove('open'); STATE.ccOpen = false; }
+
+// Swipe CC back up
+let ccDragY = 0;
+cc.addEventListener('touchstart', e => { ccDragY = e.touches[0].clientY; }, {passive:true});
+cc.addEventListener('touchend', e => {
+  const dy = ccDragY - e.changedTouches[0].clientY;
+  if (dy > 40) closeCC();
+}, {passive:true});
+
+// CC tiles toggle
+$$('.cc-tile').forEach(tile => {
+  tile.addEventListener('click', () => {
+    tile.classList.toggle('on');
+    const label = tile.querySelector('.cc-tile-label').textContent;
+    const state = tile.classList.contains('on') ? 'On' : 'Off';
+    showToast(`${label} ${state}`);
+  });
+});
+
+/* =================== APP LAUNCH SYSTEM =================== */
+/*
+  Teknik HyperOS 2 / ColorOS 16:
+  1. Tap → press feedback (scale down micro)
+  2. Home blur out — depth-of-field effect
+  3. Tile expand dari posisi ikon ke fullscreen via
+     Web Animations API — satu animasi keyframe array,
+     bukan CSS @keyframes. Easing spring-like menyeluruh.
+  4. App content fade-in overlap di fase akhir tile
+  5. Close: reverse — tile shrink ke ikon + unblur home
+*/
+
+const launcher    = $('app-launcher');
+const phoneShell  = $('phone-shell');
+let   currentApp  = null;
+let   isAnimating = false;
+
+const APP_META = {
+  phone:      { bg: 'linear-gradient(140deg,#065F46,#10B981)', icon: '📞', label: 'Phone' },
+  messages:   { bg: 'linear-gradient(140deg,#1D4ED8,#3B82F6)', icon: '💬', label: 'Messages' },
+  camera:     { bg: 'linear-gradient(140deg,#374151,#6B7280)', icon: '📷', label: 'Camera' },
+  gallery:    { bg: 'linear-gradient(140deg,#B45309,#F59E0B)', icon: '🖼️', label: 'Gallery' },
+  browser:    { bg: 'linear-gradient(140deg,#1D4ED8,#3B82F6)', icon: '🌐', label: 'Browser' },
+  maps:       { bg: 'linear-gradient(140deg,#0F766E,#2DD4BF)', icon: '🗺️', label: 'Maps' },
+  music:      { bg: 'linear-gradient(140deg,#6D28D9,#8B5CF6)', icon: '🎵', label: 'Music' },
+  calendar:   { bg: 'linear-gradient(140deg,#DC2626,#EF4444)', icon: '📅', label: 'Calendar' },
+  mail:       { bg: 'linear-gradient(140deg,#3730A3,#6366F1)', icon: '📧', label: 'Mail' },
+  notes:      { bg: 'linear-gradient(140deg,#92400E,#FCD34D)', icon: '📝', label: 'Notes' },
+  clock:      { bg: 'linear-gradient(140deg,#1F2937,#374151)', icon: '🕐', label: 'Clock' },
+  calculator: { bg: 'linear-gradient(140deg,#1F2937,#374151)', icon: '🧮', label: 'Calculator' },
+  files:      { bg: 'linear-gradient(140deg,#3F6212,#84CC16)', icon: '📁', label: 'Files' },
+  weather:    { bg: 'linear-gradient(140deg,#0F766E,#2DD4BF)', icon: '⛅', label: 'Weather' },
+  scanner:    { bg: 'linear-gradient(140deg,#9D174D,#EC4899)', icon: '🔍', label: 'Scanner' },
+  settings:   { bg: 'linear-gradient(140deg,#374151,#6B7280)', icon: '⚙️',  label: 'Settings' },
+  magisk:     { bg: 'linear-gradient(140deg,#1a1a1a,#2d2d2d)', icon: '▲',   label: 'Magisk' },
+  owl:        { bg: 'linear-gradient(140deg,#1c1a2e,#2e2060)', icon: '🦉',  label: 'Owl' },
+  kernelsu:   { bg: 'linear-gradient(140deg,#0a1628,#1a3a6e)', icon: '⊞',   label: 'KernelSU' },
+  termux:     { bg: 'linear-gradient(140deg,#0d1117,#1f2937)', icon: '❯_',  label: 'Termux' },
+  adb:        { bg: 'linear-gradient(140deg,#1a0a2e,#3b1a6b)', icon: '⚡',  label: 'ADB' },
+  xposed:     { bg: 'linear-gradient(140deg,#1a1200,#4a3500)',   icon: '🔩', label: 'LSPosed'    },
+  playstore:  { bg: 'linear-gradient(140deg,#1a3a1a,#1a7a3a)',  icon: '▶',  label: 'Play Store' },
+  youtube:    { bg: 'linear-gradient(140deg,#1a0000,#cc0000)',   icon: '▶',  label: 'YouTube'    },
+  google:     { bg: 'linear-gradient(140deg,#1a1a3a,#4285f4)',   icon: 'G',  label: 'Google'     },
+  minecraft:  { bg: 'linear-gradient(140deg,#2d4a1a,#4a7a2a)',   icon: '⛏', label: 'Minecraft'  },
+};
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+function launchApp(iconEl, appId) {
+  if (isAnimating || currentApp) return;
+  const meta = APP_META[appId] || { bg: 'linear-gradient(140deg,#1F2937,#374151)', icon: '📱', label: appId };
+  isAnimating = true;
+
+  const homeScreen = $('home-screen');
+  const shellRect  = phoneShell.getBoundingClientRect();
+  const iconImg    = iconEl.querySelector('.app-icon-img');
+  if (!iconImg) { isAnimating = false; return; }
+
+  const iconRect = iconImg.getBoundingClientRect();
+  const sL = iconRect.left - shellRect.left;
+  const sT = iconRect.top  - shellRect.top;
+  const sW = iconRect.width;
+  const sH = iconRect.height;
+  const eW = shellRect.width;
+  const eH = shellRect.height;
+
+  homeScreen.classList.add('blur-out');
+  document.body.classList.add('app-open'); // navbar pill brighter
+  iconEl.style.transform  = 'scale(0.80)';
+  iconEl.style.opacity    = '0.3';
+
+  const tile = document.createElement('div');
+  tile.className = 'launch-tile';
+  Object.assign(tile.style, {
+    left: sL+'px', top: sT+'px', width: sW+'px', height: sH+'px',
+    background: meta.bg, borderRadius: '28px', opacity: '0',
+  });
+  launcher.appendChild(tile);
+
+  /* Settings tidak pakai appScreen overlay — buka #settings-screen langsung (z-index 270) */
+  let appScreen = null;
+  if (appId !== 'settings') {
+    appScreen = buildAppScreen(appId, meta);
+    Object.assign(appScreen.style, { opacity:'0', transform:'scale(1.05)', pointerEvents:'none' });
+    launcher.appendChild(appScreen);
+  }
+
+  const OPEN_DUR = 440;
+  setTimeout(() => {
+    iconEl.style.transition = 'transform 0.18s cubic-bezier(0.4,0,0.6,1), opacity 0.18s ease';
+    iconEl.style.transform  = 'scale(0.7)';
+    iconEl.style.opacity    = '0';
+
+    tile.animate([
+      { left:`${sL}px`,           top:`${sT}px`,           width:`${sW}px`,          height:`${sH}px`,          borderRadius:'28px', opacity:'0', offset:0    },
+      { left:`${sL-sW*.05}px`,    top:`${sT-sH*.05}px`,    width:`${sW*1.12}px`,     height:`${sH*1.12}px`,     borderRadius:'30px', opacity:'1', offset:0.07 },
+      { left:`${lerp(sL,0,.22)}px`,top:`${lerp(sT,0,.22)}px`,width:`${lerp(sW,eW,.30)}px`,height:`${lerp(sH,eH,.30)}px`,borderRadius:'48px',opacity:'1',offset:0.32},
+      { left:`${lerp(sL,0,.60)}px`,top:`${lerp(sT,0,.60)}px`,width:`${lerp(sW,eW,.72)}px`,height:`${lerp(sH,eH,.72)}px`,borderRadius:'56px',opacity:'1',offset:0.60},
+      { left:'0px',               top:'0px',               width:`${eW}px`,          height:`${eH}px`,          borderRadius:'0px',  opacity:'1', offset:1    },
+    ], { duration: OPEN_DUR, easing:'cubic-bezier(0.2,0,0,1)', fill:'forwards' });
+
+    if (appId === 'settings') {
+      setTimeout(() => {
+        openSettings();
+        tile.style.visibility = 'hidden';
+        isAnimating  = false;
+        currentApp   = { tile, appScreen: null, iconEl, homeScreen, sL, sT, sW, sH };
+      }, OPEN_DUR + 30);
+    } else {
+      setTimeout(() => {
+        appScreen.style.transition = 'opacity 0.20s ease, transform 0.26s cubic-bezier(0.2,0,0.08,1)';
+        appScreen.style.opacity    = '1';
+        appScreen.style.transform  = 'scale(1)';
+      }, OPEN_DUR * 0.50);
+      setTimeout(() => {
+        tile.style.visibility = 'hidden';
+        appScreen.style.pointerEvents = 'all';
+        isAnimating = false;
+        currentApp  = { tile, appScreen, iconEl, homeScreen, sL, sT, sW, sH };
+      }, OPEN_DUR + 50);
+    }
+  }, 85);
+}
+
+function closeApp() {
+  if (!currentApp || isAnimating) return;
+  isAnimating = true;
+
+  const { tile, appScreen, iconEl, homeScreen, sL, sT, sW, sH } = currentApp;
+  const shellRect = phoneShell.getBoundingClientRect();
+  const eW = shellRect.width, eH = shellRect.height;
+  const CLOSE_DUR = 220;
+
+  /* Tutup settings screen jika terbuka */
+  if (STATE.settingsOpen) closeSettings();
+
+  /* Fade-out app content (hanya jika ada) */
+  if (appScreen) {
+    appScreen.style.transition = 'opacity 0.10s ease, transform 0.14s cubic-bezier(0.4,0,1,1)';
+    appScreen.style.opacity    = '0';
+    appScreen.style.transform  = 'scale(1.04)';
+    appScreen.style.pointerEvents = 'none';
+  }
+
+  setTimeout(() => {
+    tile.style.visibility = '';
+    tile.animate([
+      { left:'0px',               top:'0px',               width:`${eW}px`,          height:`${eH}px`,          borderRadius:'0px',  opacity:'1', offset:0    },
+      { left:`${lerp(sL,0,.35)}px`,top:`${lerp(sT,0,.35)}px`,width:`${lerp(sW,eW,.48)}px`,height:`${lerp(sH,eH,.48)}px`,borderRadius:'40px',opacity:'1',offset:0.40},
+      { left:`${sL}px`,           top:`${sT}px`,           width:`${sW}px`,          height:`${sH}px`,          borderRadius:'28px', opacity:'0', offset:1    },
+    ], { duration: CLOSE_DUR, easing:'cubic-bezier(0.4,0,0.8,1)', fill:'forwards' });
+
+    iconEl.style.transition = 'transform 0.30s cubic-bezier(0.2,0,0.1,1), opacity 0.24s ease';
+    iconEl.style.transform  = 'scale(1)';
+    iconEl.style.opacity    = '1';
+    homeScreen.classList.remove('blur-out');
+    document.body.classList.remove('app-open');
+
+    setTimeout(() => {
+      if (appScreen && appScreen.parentNode) appScreen.remove();
+      if (tile.parentNode) tile.remove();
+      currentApp  = null;
+      isAnimating = false;
+    }, CLOSE_DUR + 30);
+  }, 90);
+}
+
+function buildAppScreen(appId, meta) {
+  const div = document.createElement('div');
+  div.className = 'app-fullscreen';
+  div.dataset.appId = appId;
+  div.innerHTML = `
+    <div class="app-topbar">
+      <div class="app-close-btn" id="app-close-btn-live">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </div>
+      <div class="app-name-title">${meta.label}</div>
+    </div>
+    <div class="app-placeholder-body">
+      <div class="app-placeholder-icon" style="background:${meta.bg}">${meta.icon}</div>
+      <div class="app-placeholder-name">${meta.label}</div>
+      <div class="app-placeholder-sub">Placeholder app.<br>Akan dibangun di versi berikutnya.</div>
+    </div>
+  `;
+  div.querySelector('#app-close-btn-live').addEventListener('click', () => closeApp());
+  return div;
+}
+
+function bindAppIcons() {
+  $$('.app-icon').forEach(icon => {
+    icon.addEventListener('pointerdown', () => {
+      if (isAnimating || currentApp) return;
+      icon.style.transition = 'transform 0.09s cubic-bezier(0.4,0,1,1)';
+      icon.style.transform  = 'scale(0.88)';
+    });
+    ['pointerup','pointerleave'].forEach(ev => icon.addEventListener(ev, () => {
+      if (!currentApp && !isAnimating) {
+        icon.style.transition = 'transform 0.22s cubic-bezier(0.2,0,0.1,1)';
+        icon.style.transform  = 'scale(1)';
+      }
+    }));
+    icon.addEventListener('click', () => {
+      if (isAnimating || currentApp) return;
+      const app = icon.dataset.app;
+      if (app) launchApp(icon, app);
+    });
+  });
+}
+bindAppIcons();
+
+/* =================== NAVBAR GESTURE (swipe up from bottom) =================== */
+/*
+  HyperOS / Android gesture nav:
+  - Swipe up cepat dari bawah = Home (tutup app)
+  - Swipe up + tahan = Recent apps (nanti)
+  - Swipe dari kiri/kanan edge = Back
+  Kita implementasikan Home (tutup app) dan Back (settings sub / close app)
+*/
+const navbarEl = $('gesture-bottom');
+let navTouchStartX = 0, navTouchStartY = 0, navTouchStartTime = 0;
+
+navbarEl.addEventListener('touchstart', e => {
+  navTouchStartX    = e.touches[0].clientX;
+  navTouchStartY    = e.touches[0].clientY;
+  navTouchStartTime = Date.now();
+}, { passive: true });
+
+navbarEl.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - navTouchStartX;
+  const dy = navTouchStartY - e.changedTouches[0].clientY; /* positif = swipe ke atas */
+  const dt = Date.now() - navTouchStartTime;
+
+  /* Swipe UP dari navbar = Home gesture */
+  if (dy > 30 && Math.abs(dx) < 60) {
+    if (currentApp) { closeApp(); return; }
+    if (STATE.ccOpen) { closeCC(); return; }
+  }
+}, { passive: true });
+
+/* Edge swipe kiri/kanan = Back */
+const phoneEl = $('phone-shell');
+let edgeTouchX = 0, edgeTouchY = 0;
+phoneEl.addEventListener('touchstart', e => {
+  edgeTouchX = e.touches[0].clientX;
+  edgeTouchY = e.touches[0].clientY;
+}, { passive: true });
+phoneEl.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - edgeTouchX;
+  const dy = Math.abs(e.changedTouches[0].clientY - edgeTouchY);
+  const shellW = phoneEl.getBoundingClientRect().width;
+
+  /* Swipe kanan dari edge kiri (< 24px) = Back gesture */
+  if (edgeTouchX < 24 && dx > 50 && dy < 80) {
+    if (STATE.settingsOpen) {
+      /* Tutup sub yang aktif dulu, baru settings */
+      const openSub = document.querySelector('.settings-sub.open');
+      if (openSub) { openSub.classList.remove('open'); return; }
+      closeApp(); return;
+    }
+    if (currentApp) { closeApp(); return; }
+  }
+  /* Swipe kiri dari edge kanan = Forward (tidak ada aksi) */
+}, { passive: true });
+
+/* Desktop: klik navbar pill = home / close */
+$('gesture-bottom').addEventListener('click', () => {
+  if (currentApp) { closeApp(); return; }
+  if (STATE.ccOpen) { closeCC(); return; }
+});
+
+/* =================== SETTINGS =================== */
+const settingsScreen = $('settings-screen');
+
+function openSettings() {
+  settingsScreen.classList.add('open');
+  STATE.settingsOpen = true;
+  $('about-browser').textContent = navigator.userAgent.split(' ').slice(-2).join(' ');
+}
+function closeSettings() {
+  settingsScreen.classList.remove('open');
+  STATE.settingsOpen = false;
+  closeAllSubs();
+}
+
+$('settings-close-btn').addEventListener('click', () => {
+  if (currentApp) closeApp();
+  else closeSettings();
+});
+
+// Open sub-pages
+$$('.settings-row[data-sub]').forEach(row => {
+  row.addEventListener('click', () => {
+    const subId = row.dataset.sub;
+    const sub = $(subId);
+    if (sub) {
+      if (subId === 'sub-placeholder') {
+        // get label from row
+        const label = row.querySelector('.settings-row-label').textContent;
+        $('placeholder-title').textContent = label;
+      }
+      sub.classList.add('open');
+    }
+  });
+});
+
+// Back buttons in sub-pages
+$$('.sub-back-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('.settings-sub').classList.remove('open');
+  });
+});
+
+function closeAllSubs() {
+  $$('.settings-sub').forEach(s => s.classList.remove('open'));
+}
+
+// Toggles in settings
+$$('.toggle').forEach(toggle => {
+  toggle.addEventListener('click', () => { toggle.classList.toggle('on'); });
+});
+
+
+/* =================== HOME PAGE SWIPE =================== */
+const pagesContainer = $('app-pages-container');
+const pageDots       = $$('.page-dot');
+let currentPage      = 0;
+const TOTAL_PAGES    = 2;
+let pageSwipeStartX  = 0;
+let pageSwipeStartY  = 0;
+let pageSwiping      = false;
+
+function goToPage(n) {
+  currentPage = Math.max(0, Math.min(TOTAL_PAGES - 1, n));
+  pagesContainer.style.transform = `translateX(-${currentPage * 50}%)`;
+  pageDots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
+}
+
+// Touch swipe between pages
+const gridScroll = $('app-grid-scroll');
+gridScroll.addEventListener('touchstart', e => {
+  if (isAnimating || currentApp) return;
+  pageSwipeStartX = e.touches[0].clientX;
+  pageSwipeStartY = e.touches[0].clientY;
+  pageSwiping = false;
+}, {passive: true});
+
+gridScroll.addEventListener('touchmove', e => {
+  if (!pageSwipeStartX) return;
+  const dx = e.touches[0].clientX - pageSwipeStartX;
+  const dy = e.touches[0].clientY - pageSwipeStartY;
+  if (!pageSwiping && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
+    pageSwiping = true;
+  }
+}, {passive: true});
+
+gridScroll.addEventListener('touchend', e => {
+  if (!pageSwiping) return;
+  const dx = e.changedTouches[0].clientX - pageSwipeStartX;
+  if (dx < -40)  goToPage(currentPage + 1);
+  if (dx >  40)  goToPage(currentPage - 1);
+  pageSwiping = false;
+  pageSwipeStartX = 0;
+});
+
+// Dot click
+pageDots.forEach(dot => {
+  dot.addEventListener('click', () => goToPage(+dot.dataset.page));
+});
+
+/* =================== WALLPAPER SYSTEM =================== */
+
+// Wallpaper menggunakan gambar asli dari OriginOS_web (quandz24-ui.github.io)
+// Persis seperti cara quandz24 — store URL, tampilkan sebagai background-image
+const BASE = 'https://quandz24-ui.github.io/OriginOS_web/originos_data/';
+const WALLPAPERS = [
+  { id: 0, name: 'Abstract Blue',    url: BASE + '462489103_1400206661384168_7007140902614083639_n.jpg', selected: true },
+  { id: 1, name: 'Abstract 2',       url: BASE + 'wallpaper_2.png' },
+  { id: 2, name: 'Abstract 3',       url: BASE + 'wallpaper_3.png' },
+  { id: 3, name: 'Abstract 4',       url: BASE + 'wallpaper_4.png' },
+  { id: 4, name: 'Abstract 5',       url: BASE + 'wallpaper_5.png' },
+  { id: 5, name: 'Abstract 6',       url: BASE + 'wallpaper_7.png' },
+  { id: 6, name: 'Abstract 7',       url: BASE + 'wallpaper_6.png' },
+  /* Fallback CSS gradient — jika gambar gagal load */
+  { id: 7, name: 'Midnight (CSS)',    url: null, css: 'linear-gradient(160deg,#0D1B3E 0%,#0A0A0F 55%,#1A0A2E 100%)' },
+];
+
+let selectedWpId   = 0;
+let wpApplyTarget  = 'both';  // 'both' | 'home' | 'lock'
+let wpPreviewId    = 0;       // wallpaper currently shown in preview
+
+// Build the wallpaper grid thumbnails
+/* Konversi wallpaper entry ke CSS string */
+function wpToCss(wp) {
+  if (STATE.customWpCss) return STATE.customWpCss; // override custom
+  if (wp.url)  return `url("${wp.url}") center/cover no-repeat`;
+  if (wp.css)  return wp.css;
+  return '#0A0A0F';
+}
+
+function buildWpGrid() {
+  const grid = $('wp-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  WALLPAPERS.forEach(wp => {
+    const thumb = document.createElement('div');
+    thumb.className = 'wp-thumb' + (wp.id === selectedWpId ? ' selected' : '');
+    thumb.dataset.wpId = wp.id;
+    thumb.title = wp.name;
+
+    if (wp.url) {
+      thumb.style.backgroundImage    = `url("${wp.url}")`;
+      thumb.style.backgroundSize     = 'cover';
+      thumb.style.backgroundPosition = 'center';
+    } else {
+      thumb.style.background = wp.css;
+    }
+
+    thumb.addEventListener('click', () => selectWpThumb(wp.id));
+    grid.appendChild(thumb);
+  });
+
+  // Reset custom jika grid direbuild
+  STATE.customWpCss = null;
+  updateWpPreview(selectedWpId);
+}
+
+function selectWpThumb(id) {
+  STATE.customWpCss = null; // clear custom saat pilih dari grid
+  selectedWpId = id;
+  $$('.wp-thumb').forEach(t => t.classList.toggle('selected', +t.dataset.wpId === id));
+  updateWpPreview(id);
+}
+
+function updateWpPreview(id) {
+  const wp     = WALLPAPERS.find(w => w.id === id);
+  const screen = $('wp-preview-screen');
+  if (!screen) return;
+
+  if (wp && wp.url) {
+    screen.style.backgroundImage    = `url("${wp.url}")`;
+    screen.style.backgroundSize     = 'cover';
+    screen.style.backgroundPosition = 'center';
+    screen.style.background         = '';
+  } else if (wp && wp.css) {
+    screen.style.background         = wp.css;
+    screen.style.backgroundImage    = '';
+  }
+}
+
+function applyWallpaper(css) {
+  // css bisa berupa "url(...) center/cover no-repeat" atau gradient
+  document.documentElement.style.setProperty('--wallpaper', css);
+  STATE.wallpaper = css;
+  // Sync preview mini-phone
+  const screen = $('wp-preview-screen');
+  if (screen) {
+    if (css.startsWith('url(')) {
+      screen.style.backgroundImage    = css.split(' ')[0];
+      screen.style.backgroundSize     = 'cover';
+      screen.style.backgroundPosition = 'center';
+      screen.style.background         = '';
+    } else {
+      screen.style.background      = css;
+      screen.style.backgroundImage = '';
+    }
+  }
+}
+
+// Tabs: both / home / lock
+$$('.wp-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    $$('.wp-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    wpApplyTarget = tab.dataset.target;
+  });
+});
+
+// Apply button
+const wpApplyBtn = $('wp-apply-btn');
+if (wpApplyBtn) {
+  wpApplyBtn.addEventListener('click', () => {
+    let css;
+    if (STATE.customWpCss) {
+      css = STATE.customWpCss;
+    } else {
+      const wp = WALLPAPERS.find(w => w.id === selectedWpId);
+      if (!wp) return;
+      css = wpToCss(wp);
+    }
+    applyWallpaper(css);
+    const target = wpApplyTarget === 'both' ? 'home & lock screen' : wpApplyTarget + ' screen';
+    showToast(`Wallpaper applied to ${target}`);
+  });
+}
+
+// File upload custom wallpaper
+const wpUploadBtn = $('wp-upload-btn');
+const wpFileInput = $('wp-file-input');
+if (wpUploadBtn && wpFileInput) {
+  wpUploadBtn.addEventListener('click', () => wpFileInput.click());
+  wpFileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const dataUrl = ev.target.result;
+      STATE.customWpCss = `url("${dataUrl}") center/cover no-repeat`;
+      selectedWpId = 99; // ID custom
+
+      // Tampilkan di preview
+      const screen = $('wp-preview-screen');
+      if (screen) {
+        screen.style.backgroundImage    = `url("${dataUrl}")`;
+        screen.style.backgroundSize     = 'cover';
+        screen.style.backgroundPosition = 'center';
+        screen.style.background         = '';
+      }
+      // Clear semua selection
+      $$('.wp-thumb').forEach(t => t.classList.remove('selected'));
+      showToast('Custom wallpaper loaded — tap Apply');
+    };
+    reader.readAsDataURL(file);
+    wpFileInput.value = '';
+  });
+}
+
+// Init wallpaper grid setiap kali sub-wallpaper dibuka
+$$('.settings-row[data-sub="sub-wallpaper"]').forEach(r => {
+  r.addEventListener('click', () => setTimeout(buildWpGrid, 80));
+});
+
+/* =================== TOAST =================== */
+let toastTimer = null;
+function showToast(msg) {
+  const toast = $('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+/* =================== KEYBOARD (desktop) =================== */
+document.addEventListener('keydown', e => {
+  if (STATE.screen === 'pin') {
+    if (e.key >= '0' && e.key <= '9' && STATE.pinInput.length < 4) {
+      STATE.pinInput += e.key;
+      updatePinDots();
+      if (STATE.pinInput.length === 4) setTimeout(checkPIN, 120);
+    }
+    if (e.key === 'Backspace') {
+      STATE.pinInput = STATE.pinInput.slice(0, -1);
+      updatePinDots();
+    }
+  }
+  // Arrow keys: swipe home pages on desktop
+  if (STATE.screen === 'home' && !STATE.settingsOpen && !STATE.ccOpen && !currentApp) {
+    if (e.key === 'ArrowRight') goToPage(currentPage + 1);
+    if (e.key === 'ArrowLeft')  goToPage(currentPage - 1);
+  }
+  if (e.key === 'Escape') {
+    if (currentApp) closeApp();
+    else if (STATE.ccOpen) closeCC();
+    else if (STATE.settingsOpen) closeSettings();
+  }
+});
+
+/* =================== INIT =================== */
+updateClocks();
+</script>
+</body>
+</html>
+}
+
+html, body {
+  width: 100%; height: 100%;
+  background: #050507;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-main);
+  overflow: hidden;
+}
+
+/* ===================== PHONE SHELL ===================== */
+#phone-shell {
+  position: relative;
+  width: var(--phone-w);
+  height: var(--phone-h);
+  background: #0A0A0F;
+  border-radius: 52px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.10),
+    0 0 0 10px #111116,
+    0 0 0 11px rgba(255,255,255,0.06),
+    0 40px 100px rgba(0,0,0,0.8);
+  flex-shrink: 0;
+}
+
+/* Notch / Dynamic Island */
+#dynamic-island {
+  position: absolute;
+  top: 12px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+}
+.di-camera {
+  width: 10px; height: 10px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  position: relative;
+}
+.di-camera::after {
+  content:''; position:absolute; inset:2px;
+  background: #2563EB22; border-radius:50%;
+}
+
+/* ===================== SCREEN LAYERS ===================== */
+.screen-layer {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  will-change: transform, opacity;
+}
+.screen-layer.hidden   { opacity:0; pointer-events:none; transform:scale(1.04); }
+.screen-layer.gone     { display:none; }
+
+/* ===================== BOOT SCREEN ===================== */
+#boot-screen {
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0;
+  z-index: 100;
+}
+.boot-logo {
+  font-size: 42px; font-weight: 700; letter-spacing: -1px;
+  color: #fff;
+}
+.boot-logo span { color: var(--meui-blue); }
+
+/* Bottom anchored group */
+.boot-bottom-group {
+  position: absolute;
+  bottom: 52px; left: 0; right: 0;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 14px;
+}
+.boot-powered {
+  display: flex; align-items: center; gap: 7px;
+}
+.boot-powered-text {
+  font-size: 11px;
+  color: rgba(255,255,255,0.30);
+  letter-spacing: 0.5px;
+}
+.boot-android-icon {
+  width: 16px; height: 16px; fill: rgba(255,255,255,0.30);
+}
+.boot-bar-wrap {
+  width: 64px; height: 1.5px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 2px; overflow: hidden;
+}
+.boot-bar {
+  height: 100%; width: 0;
+  background: #fff;
+  border-radius: 2px;
+  animation: bootLoad 2.4s cubic-bezier(0.4,0,0.6,1) forwards;
+}
+@keyframes bootLoad {
+  0%   { width: 0% }
+  30%  { width: 30% }
+  55%  { width: 55% }
+  75%  { width: 75% }
+  90%  { width: 88% }
+  100% { width: 100% }
+}
+
+/* ===================== LOCK SCREEN ===================== */
+#lock-screen {
+  background: var(--wallpaper);
+  z-index: 80;
+  display: flex; flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Lock screen ambient blobs */
+.ls-blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(70px); opacity: 0.18; pointer-events:none;
+}
+.ls-blob-1 { width:280px;height:280px; background:#2563EB; top:-60px; right:-60px; }
+.ls-blob-2 { width:200px;height:200px; background:#7C3AED; bottom:120px; left:-80px; }
+
+/* Status bar */
+.status-bar {
+  width:100%; display:flex; justify-content:space-between; align-items:center;
+  padding: 56px 28px 0;
+  font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.9);
+  position: relative; z-index: 2;
+}
+.status-icons { display:flex; gap:6px; align-items:center; }
+.si { font-size:12px; opacity:.85; }
+
+/* Lock clock */
+.lock-clock-wrap { margin-top: 52px; text-align:center; position:relative; z-index:2; }
+.lock-time {
+  font-size: 78px; font-weight: 300; letter-spacing: -3px;
+  color: #fff; line-height: 1;
+}
+.lock-date {
+  font-size: 16px; color: rgba(255,255,255,0.65);
+  margin-top: 8px; letter-spacing: 0.3px;
+}
+.lock-notifications {
+  margin-top: 28px; width: 88%; display:flex; flex-direction:column; gap:10px;
+  position:relative; z-index:2;
+}
+.lock-notif {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--meui-radius-sm);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.ln-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 18px; flex-shrink:0;
+}
+.ln-text { flex:1; }
+.ln-app  { font-size: 11px; color: rgba(255,255,255,0.45); margin-bottom:2px; }
+.ln-msg  { font-size: 13px; color: rgba(255,255,255,0.85); }
+
+/* Lock bottom */
+.lock-bottom {
+  position: absolute; bottom: 0; left:0; right:0;
+  padding: 24px 32px 48px;
+  display: flex; flex-direction:column; align-items:center; gap: 20px;
+  z-index: 3;
+}
+.lock-swipe-hint {
+  font-size: 13px; color: rgba(255,255,255,0.45);
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.swipe-arrow { font-size: 18px; animation: bounce 1.8s infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+.lock-shortcuts { display:flex; gap: 60px; }
+.lock-shortcut {
+  width: 52px; height: 52px;
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  display: flex; align-items:center; justify-content:center;
+  font-size: 22px; cursor: pointer;
+  transition: background 0.2s;
+}
+.lock-shortcut:active { background: rgba(255,255,255,0.2); }
+
+/* ===================== PIN SCREEN ===================== */
+#pin-screen {
+  background: var(--wallpaper);
+  z-index: 85;
+  display: flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap: 0;
+}
+.pin-screen-bg-blur {
+  position:absolute; inset:0;
+  backdrop-filter: blur(40px);
+  background: rgba(0,0,0,0.45);
+}
+.pin-wrap { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:0; }
+.pin-label { font-size:15px; color:rgba(255,255,255,0.7); margin-bottom:28px; }
+.pin-dots { display:flex; gap:16px; margin-bottom:40px; }
+.pin-dot {
+  width: 14px; height:14px; border-radius:50%;
+  border: 1.5px solid rgba(255,255,255,0.5);
+  transition: background 0.15s, border-color 0.15s;
+}
+.pin-dot.filled { background: #fff; border-color:#fff; }
+.pin-dot.shake  { animation: dotShake 0.4s; }
+@keyframes dotShake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 60%{transform:translateX(6px)}
+}
+.pin-pad {
+  display: grid; grid-template-columns: repeat(3, 72px);
+  grid-template-rows: repeat(4, 72px);
+  gap: 14px;
+}
+.pin-key {
+  width:72px; height:72px; border-radius:50%;
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.12);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  cursor:pointer; transition: background 0.15s, transform 0.1s;
+  color: #fff;
+}
+.pin-key:active { background: rgba(255,255,255,0.22); transform:scale(0.93); }
+.pin-key-num { font-size: 24px; font-weight: 400; line-height:1; }
+.pin-key-sub { font-size: 9px; letter-spacing:1.5px; color:rgba(255,255,255,0.40); margin-top:1px; }
+.pin-key.key-empty { background:transparent; border:none; pointer-events:none; }
+.pin-key.key-del svg { width:22px; height:22px; fill:rgba(255,255,255,0.8); }
+
+/* ===================== HOME SCREEN ===================== */
+#home-screen {
+  background: var(--wallpaper);
+  z-index: 70;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* Home status bar */
+.home-status {
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 52px 24px 0;
+  font-size: 14px; font-weight:600; color:#fff;
+  flex-shrink:0;
+}
+.home-status-icons { display:flex; gap:6px; align-items:center; }
+
+/* Home clock widget */
+.home-clock-widget {
+  margin: 16px 20px 0;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: var(--meui-radius);
+  padding: 20px 22px;
+  display: flex; justify-content:space-between; align-items:center;
+  flex-shrink:0;
+}
+.hcw-left {}
+.hcw-time { font-size: 42px; font-weight:300; color:#fff; line-height:1; letter-spacing:-1px; }
+.hcw-date { font-size:13px; color:rgba(255,255,255,0.55); margin-top:4px; }
+.hcw-right { text-align:right; }
+.hcw-weather { font-size: 34px; }
+.hcw-temp { font-size:14px; color:rgba(255,255,255,0.55); }
+
+/* App grid */
+.app-grid-scroll {
+  flex:1; overflow-y:auto; overflow-x:hidden;
+  padding: 18px 20px 10px;
+  scrollbar-width:none;
+}
+.app-grid-scroll::-webkit-scrollbar { display:none; }
+.app-page { display:grid; grid-template-columns:repeat(4,1fr); gap: 0 0; row-gap:8px; }
+
+.app-icon {
+  display:flex; flex-direction:column; align-items:center;
+  gap: 6px; cursor:pointer; padding: 8px 4px;
+  transition: transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.app-icon:active { transform: scale(0.9); }
+.app-icon-img {
+  width: 60px; height: 60px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700;
+  position: relative; overflow: hidden; flex-shrink: 0;
+  color: rgba(255,255,255,0.90);
+  letter-spacing: -0.5px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.app-icon-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.13) 0%, transparent 55%);
+  pointer-events: none; border-radius: inherit;
+  z-index: 2;
+}
+.app-icon-label {
+  font-size: 11px; color: rgba(255,255,255,0.75);
+  text-align:center; max-width:64px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+/* ===================== ICON IMAGE SYSTEM ===================== */
+
+/*
+  Dua mode ikon:
+  - Default / ic-fill : PNG dengan background sendiri → cover penuh
+  - ic-pad            : PNG transparan (MIUI style)   → padding, background container keliatan
+*/
+
+/* Mode fill — default, PNG cover penuh */
+.app-icon-img img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  border-radius: inherit;
+  z-index: 1;
+  display: block;
+  border: none; outline: none; margin: 0; padding: 0;
+}
+
+/* Mode pad — PNG transparan, floating di atas background */
+.app-icon-img.ic-pad img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  border-radius: 0;
+  z-index: 1;
+  display: block;
+  border: none; outline: none;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.20));
+}
+
+/* Saat gambar berhasil load, sembunyikan background container */
+.app-icon-img.ic-pad.img-loaded {
+  background: transparent !important;
+}
+.app-icon-img.ic-pad.img-loaded::after {
+  display: none; /* hapus shimmer juga */
+}
+
+.app-icon-img img.err { display: none !important; }
+.ic-blue    { background: linear-gradient(140deg,#1D4ED8,#3B82F6); }
+.ic-red     { background: linear-gradient(140deg,#DC2626,#EF4444); }
+.ic-green   { background: linear-gradient(140deg,#065F46,#10B981); }
+.ic-orange  { background: linear-gradient(140deg,#B45309,#F59E0B); }
+.ic-purple  { background: linear-gradient(140deg,#6D28D9,#8B5CF6); }
+.ic-pink    { background: linear-gradient(140deg,#9D174D,#EC4899); }
+.ic-teal    { background: linear-gradient(140deg,#0F766E,#2DD4BF); }
+.ic-gray    { background: linear-gradient(140deg,#374151,#6B7280); }
+.ic-yellow  { background: linear-gradient(140deg,#92400E,#FCD34D); }
+.ic-dark    { background: linear-gradient(140deg,#1F2937,#374151); }
+.ic-indigo  { background: linear-gradient(140deg,#3730A3,#6366F1); }
+.ic-lime    { background: linear-gradient(140deg,#3F6212,#84CC16); }
+
+/* Multi-page scroll */
+.app-grid-scroll {
+  flex:1; overflow: hidden;
+  padding: 0; scrollbar-width:none;
+  display: flex; flex-direction: column;
+}
+#app-pages-container {
+  display: flex; flex-direction: row;
+  transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+  width: 200%; /* 2 pages */
+  flex: 1;
+}
+.app-page {
+  width: 50%; /* each page = half of 200% = 100% phone width */
+  display:grid; grid-template-columns:repeat(4,1fr);
+  row-gap:8px; padding: 18px 20px 10px; align-content: start;
+  flex-shrink: 0;
+}
+
+/* Page dots */
+.page-dots {
+  display: flex; justify-content: center; gap: 6px;
+  padding: 6px 0 4px;
+  flex-shrink: 0;
+}
+.page-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.28);
+  transition: background 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.page-dot.active {
+  background: rgba(255,255,255,0.85);
+  transform: scale(1.25);
+}
+
+/* Dock */
+.home-dock {
+  padding: 10px 24px 28px;
+  display:flex; justify-content:center; flex-shrink:0;
+}
+.dock-bar {
+  background: rgba(255,255,255,0.09);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 30px;
+  padding: 12px 20px;
+  display:flex; gap:16px; align-items:center;
+}
+
+/* Home indicator — hidden, pill now handled by #gesture-bottom */
+.home-indicator { display: none; }
+
+/* ===================== CONTROL CENTER ===================== */
+#control-center {
+  position: absolute;
+  top: 0; left:0; right:0;
+  height: 100%;
+  background: rgba(10,10,15,0.65);
+  backdrop-filter: blur(40px);
+  z-index: 200;
+  display:flex; flex-direction:column;
+  padding: 60px 20px 40px;
+  gap: 16px;
+  transform: translateY(-100%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+  pointer-events:none;
+}
+#control-center.open {
+  transform: translateY(0);
+  pointer-events:all;
+}
+
+.cc-status-row {
+  display:flex; justify-content:space-between; align-items:center; color:#fff;
+  font-size:14px; font-weight:600;
+}
+.cc-handle {
+  width:40px; height:4px; background:rgba(255,255,255,0.25); border-radius:2px;
+  align-self:center; margin-bottom:4px;
+}
+
+/* CC toggle grid */
+.cc-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap:12px;
+}
+.cc-tile {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--meui-radius-sm);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  aspect-ratio: 1/1; cursor:pointer; gap:6px;
+  transition: background 0.2s, transform 0.15s;
+}
+.cc-tile:active { transform:scale(0.92); }
+.cc-tile.on { background: rgba(255,255,255,0.22); }
+.cc-tile svg { width:22px; height:22px; fill:#fff; }
+.cc-tile-label { font-size:11px; color:rgba(255,255,255,0.7); }
+
+/* CC sliders */
+.cc-slider-row { display:flex; flex-direction:column; gap:12px; }
+.cc-slider-block {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--meui-radius-sm);
+  padding: 14px 16px;
+  display:flex; align-items:center; gap:12px;
+}
+.cc-slider-block svg { width:18px; height:18px; fill:rgba(255,255,255,0.6); flex-shrink:0; }
+.cc-slider-input {
+  flex:1; -webkit-appearance:none; appearance:none;
+  height:4px; border-radius:4px;
+  background: rgba(255,255,255,0.2);
+  outline:none; cursor:pointer;
+}
+.cc-slider-input::-webkit-slider-thumb {
+  -webkit-appearance:none; width:18px; height:18px;
+  background:#fff; border-radius:50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+/* CC media */
+.cc-media {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--meui-radius-sm);
+  padding: 14px 16px;
+  display:flex; align-items:center; gap:12px;
+}
+.cc-media-cover {
+  width:44px; height:44px; border-radius:10px;
+  background: linear-gradient(135deg,#1D4ED8,#7C3AED);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0;
+}
+.cc-media-info { flex:1; }
+.cc-media-title { font-size:13px; color:#fff; font-weight:500; }
+.cc-media-sub { font-size:11px; color:rgba(255,255,255,0.45); }
+.cc-media-controls { display:flex; gap:16px; align-items:center; }
+.cc-media-btn { cursor:pointer; opacity:0.7; transition: opacity 0.15s; }
+.cc-media-btn:hover { opacity:1; }
+.cc-media-btn svg { width:22px; height:22px; fill:#fff; }
+
+/* ===================== SETTINGS APP ===================== */
+#settings-screen {
+  position: absolute; inset:0;
+  background: var(--meui-bg);
+  z-index: 270; /* di atas app-launcher (250) dan app-fullscreen (260) */
+  display:flex; flex-direction:column;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  pointer-events:none;
+}
+#settings-screen.open {
+  transform: translateX(0);
+  pointer-events:all;
+}
+
+/* Sub-page slide */
+.settings-sub {
+  position:absolute; inset:0;
+  background: var(--meui-bg);
+  z-index: 160;
+  display:flex; flex-direction:column;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+  pointer-events:none;
+}
+.settings-sub.open {
+  transform: translateX(0);
+  pointer-events:all;
+}
+
+.settings-topbar {
+  display:flex; align-items:center;
+  padding: 54px 20px 12px;
+  flex-shrink:0;
+  gap:12px;
+}
+.settings-back-btn {
+  width:36px; height:36px; border-radius:50%;
+  background: rgba(255,255,255,0.07);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; flex-shrink:0;
+  transition: background 0.15s;
+}
+.settings-back-btn:active { background: rgba(255,255,255,0.15); }
+.settings-back-btn svg { width:16px; height:16px; fill:var(--meui-text); }
+.settings-title { font-size:22px; font-weight:600; color:var(--meui-text); }
+
+.settings-search {
+  margin: 0 20px 16px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--meui-border);
+  border-radius: var(--meui-radius-sm);
+  display:flex; align-items:center; gap:10px; padding: 10px 14px;
+  flex-shrink:0;
+}
+.settings-search svg { width:16px; height:16px; fill:var(--meui-text-dim); }
+.settings-search span { font-size:14px; color:var(--meui-text-faint); }
+
+.settings-scroll {
+  flex:1; overflow-y:auto; padding: 0 20px 40px;
+  scrollbar-width:none;
+}
+.settings-scroll::-webkit-scrollbar { display:none; }
+
+.settings-section-label {
+  font-size:12px; font-weight:600;
+  color: var(--meui-blue-light);
+  letter-spacing: 0.8px; text-transform:uppercase;
+  margin: 20px 4px 8px;
+}
+.settings-group {
+  background: var(--meui-card);
+  border: 1px solid var(--meui-border);
+  border-radius: var(--meui-radius);
+  overflow:hidden; margin-bottom:4px;
+}
+.settings-row {
+  display:flex; align-items:center; gap:14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--meui-border);
+  cursor:pointer; transition: background 0.15s;
+}
+.settings-row:last-child { border-bottom:none; }
+.settings-row:active { background: rgba(255,255,255,0.04); }
+.settings-row-icon {
+  width:36px; height:36px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; flex-shrink:0;
+}
+.settings-row-text { flex:1; }
+.settings-row-label { font-size:15px; color:var(--meui-text); font-weight:400; }
+.settings-row-sub { font-size:12px; color:var(--meui-text-dim); margin-top:1px; }
+.settings-row-right {
+  display:flex; align-items:center; gap:6px;
+  color:var(--meui-text-faint); font-size:14px;
+}
+.settings-row-right svg { width:16px; height:16px; fill:var(--meui-text-faint); }
+
+/* Toggle switch */
+.toggle-wrap { display:flex; align-items:center; }
+.toggle {
+  width: 48px; height: 28px; border-radius: 14px;
+  background: rgba(255,255,255,0.12);
+  position:relative; cursor:pointer;
+  transition: background 0.25s;
+}
+.toggle.on { background: var(--meui-blue); }
+.toggle::after {
+  content:''; position:absolute;
+  width:22px; height:22px; border-radius:50%;
+  background:#fff; top:3px; left:3px;
+  transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle.on::after { transform:translateX(20px); }
+
+/* About sub-page */
+.about-hero {
+  margin: 20px; padding:24px;
+  background: var(--meui-card); border:1px solid var(--meui-border);
+  border-radius:var(--meui-radius); text-align:center;
+}
+.about-logo-big { font-size:32px; font-weight:700; color:var(--meui-text); letter-spacing:-1px; }
+.about-logo-big span { color:var(--meui-blue); }
+.about-version { font-size:14px; color:var(--meui-text-dim); margin-top:6px; }
+.about-device-name {
+  margin-top:12px; font-size:16px; font-weight:500; color:var(--meui-text);
+  padding: 8px 16px; background:rgba(255,255,255,0.05); border-radius:8px; display:inline-block;
+  cursor:pointer; border:1px solid var(--meui-border);
+}
+
+/* Wallpaper system */
+.wp-preview-card { margin:0 16px 16px; display:flex; justify-content:center; }
+.wp-preview-phone { width:110px; height:195px; border-radius:18px; border:2px solid rgba(255,255,255,0.15); overflow:hidden; position:relative; box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+.wp-preview-screen { position:absolute; inset:0; background:var(--wallpaper); background-size:cover; background-position:center; transition:background 0.4s ease; }
+.wp-preview-overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.wp-tabs { display:flex; gap:8px; margin:0 16px 12px; background:var(--meui-card); border-radius:12px; padding:4px; }
+.wp-tab { flex:1; text-align:center; padding:8px 0; border-radius:9px; cursor:pointer; font-size:13px; font-weight:500; color:var(--meui-text-dim); transition:background 0.2s, color 0.2s; }
+.wp-tab.active { background:var(--meui-blue); color:#fff; }
+.wp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0 16px; }
+.wp-thumb { aspect-ratio:9/16; border-radius:14px; border:2.5px solid transparent; cursor:pointer; overflow:hidden; transition:border-color 0.2s, transform 0.15s; position:relative; background-size:cover; background-position:center; }
+.wp-thumb:active { transform:scale(0.95); }
+.wp-thumb.selected { border-color:var(--meui-blue); }
+.wp-thumb.selected::after { content:'✓'; position:absolute; bottom:6px; right:8px; font-size:14px; font-weight:700; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+.wp-apply-btn { display:block; width:calc(100% - 32px); margin:0 16px; padding:14px; border:none; border-radius:14px; background:var(--meui-blue); color:#fff; font-size:15px; font-weight:600; font-family:var(--font-main); cursor:pointer; transition:background 0.2s, transform 0.1s; }
+.wp-apply-btn:active { background:var(--meui-blue-light); transform:scale(0.98); }
+
+
+/* ===================== APP LAUNCH SYSTEM ===================== */
+
+/* Layer khusus untuk animasi — di atas semua screen */
+#app-launcher {
+  position: absolute; inset: 0;
+  z-index: 250;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+/*
+  Tile ekspansi: div yang merepresentasikan ikon,
+  dianimasikan dari posisi & ukuran ikon ke fullscreen.
+  Seluruh animasi dikontrol via Web Animations API (JS),
+  tidak ada @keyframes agar tidak patah.
+*/
+.launch-tile {
+  position: absolute;
+  will-change: transform, border-radius, opacity;
+  pointer-events: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* App fullscreen content — muncul setelah tile expand */
+.app-fullscreen {
+  position: absolute; inset: 0;
+  z-index: 260;
+  display: flex; flex-direction: column;
+  pointer-events: none;
+  will-change: opacity, transform;
+  background: var(--meui-bg);
+}
+
+/* Home screen blur saat app dibuka — persis HyperOS 2 */
+#home-screen {
+  transition: filter 0.38s ease, opacity 0.38s ease;
+}
+#home-screen.blur-out {
+  filter: blur(18px) brightness(0.6);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* App topbar */
+.app-topbar {
+  display: flex; align-items: center;
+  padding: 52px 18px 12px;
+  gap: 10px; flex-shrink: 0;
+}
+.app-close-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; flex-shrink: 0;
+  transition: background 0.15s, transform 0.12s;
+}
+.app-close-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.92); }
+.app-close-btn svg { width: 16px; height: 16px; fill: rgba(255,255,255,0.85); }
+.app-name-title { font-size: 18px; font-weight: 600; color: #fff; }
+
+/* Placeholder app content */
+.app-placeholder-body {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; padding: 32px;
+}
+.app-placeholder-icon {
+  width: 84px; height: 84px; border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.app-placeholder-name { font-size: 22px; font-weight: 600; color: #fff; }
+.app-placeholder-sub  { font-size: 14px; color: rgba(255,255,255,0.4); text-align: center; line-height: 1.5; }
+
+/* ===================== GESTURE ZONE ===================== */
+#gesture-top {
+  position:absolute; top:0; left:0; right:0; height:60px;
+  z-index: 290; /* di atas segalanya */
+}
+#gesture-bottom {
+  position:absolute; bottom:0; left:0; right:0; height:36px;
+  z-index: 290;
+  display:flex; align-items:center; justify-content:center;
+  /* visual pill — selalu terlihat di atas app/settings */
+}
+#gesture-bottom::before {
+  content:'';
+  width:134px; height:5px; border-radius:3px;
+  background:rgba(255,255,255,0.30);
+  /* sedikit lebih terang saat ada app terbuka */
+  transition: background 0.3s;
+}
+body.app-open #gesture-bottom::before {
+  background: rgba(255,255,255,0.55);
+}
+
+/* ===================== TOAST ===================== */
+.toast {
+  position:absolute; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
+  background: rgba(30,30,40,0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 24px; padding:10px 20px;
+  font-size:13px; color:#fff;
+  white-space:nowrap;
+  opacity:0; z-index:9998;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events:none;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-height: 860px) {
+  :root { --phone-h: 780px; --phone-w: 360px; }
+}
 @media (max-width: 420px) {
   :root { --phone-w: 100vw; --phone-h: 100dvh; }
   #phone-shell { border-radius: 0; box-shadow: none; }
