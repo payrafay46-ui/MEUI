@@ -1,0 +1,138 @@
+/* ===================== HOME SCREEN ===================== */
+#home-screen {
+  background: var(--wallpaper);
+  z-index: 70;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transition: filter 0.38s ease, opacity 0.38s ease;
+}
+#home-screen.blur-out {
+  filter: blur(18px) brightness(0.6);
+  opacity: 0.7; pointer-events: none;
+}
+
+.home-status {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 52px 24px 0;
+  font-size: 14px; font-weight: 600; color: #fff; flex-shrink: 0;
+}
+.home-status-icons { display: flex; gap: 6px; align-items: center; }
+
+/* Clock widget */
+.home-clock-widget {
+  margin: 16px 20px 0;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: var(--meui-radius);
+  padding: 20px 22px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
+}
+.hcw-time { font-size: 42px; font-weight: 300; color: #fff; line-height: 1; letter-spacing: -1px; }
+.hcw-date { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+.hcw-right { text-align: right; }
+.hcw-weather { font-size: 34px; }
+.hcw-temp { font-size: 14px; color: rgba(255,255,255,0.55); }
+
+/* ===================== APP GRID / PAGES ===================== */
+.app-grid-scroll {
+  flex: 1; overflow: hidden;
+  padding: 0; scrollbar-width: none;
+  display: flex; flex-direction: column;
+}
+#app-pages-container {
+  display: flex; flex-direction: row;
+  transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+  width: 200%; flex: 1;
+}
+.app-page {
+  width: 50%;
+  display: grid; grid-template-columns: repeat(4,1fr);
+  row-gap: 8px; padding: 18px 20px 10px; align-content: start;
+  flex-shrink: 0;
+}
+
+/* Page dots */
+.page-dots {
+  display: flex; justify-content: center; gap: 6px;
+  padding: 6px 0 4px; flex-shrink: 0;
+}
+.page-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.28);
+  transition: background 0.2s, transform 0.2s; cursor: pointer;
+}
+.page-dot.active {
+  background: rgba(255,255,255,0.85);
+  transform: scale(1.25);
+}
+
+/* ===================== APP ICONS ===================== */
+.app-icon {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; cursor: pointer; padding: 8px 4px;
+  transition: transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.app-icon:active { transform: scale(0.9); }
+
+.app-icon-img {
+  width: var(--icon-size); height: var(--icon-size);
+  border-radius: var(--icon-radius);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700;
+  position: relative; overflow: hidden; flex-shrink: 0;
+  color: rgba(255,255,255,0.90); letter-spacing: -0.5px;
+  border: none !important; outline: none !important; box-shadow: none !important;
+  transition: width 0.2s ease, height 0.2s ease, border-radius 0.2s ease;
+}
+.app-icon-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.13) 0%, transparent 55%);
+  pointer-events: none; border-radius: inherit; z-index: 2;
+}
+.app-icon-label {
+  font-size: 11px; color: rgba(255,255,255,0.75);
+  text-align: center; max-width: 64px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Icon image system */
+.app-icon-img img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  border-radius: inherit; z-index: 1; display: block;
+  border: none; outline: none; margin: 0; padding: 0;
+}
+.app-icon-img.ic-pad img { object-fit: contain; border-radius: 0; }
+.app-icon-img img.err { display: none !important; }
+
+/* Icon color classes */
+.ic-blue   { background: linear-gradient(140deg,#1D4ED8,#3B82F6); }
+.ic-red    { background: linear-gradient(140deg,#DC2626,#EF4444); }
+.ic-green  { background: linear-gradient(140deg,#065F46,#10B981); }
+.ic-orange { background: linear-gradient(140deg,#B45309,#F59E0B); }
+.ic-purple { background: linear-gradient(140deg,#6D28D9,#8B5CF6); }
+.ic-pink   { background: linear-gradient(140deg,#9D174D,#EC4899); }
+.ic-teal   { background: linear-gradient(140deg,#0F766E,#2DD4BF); }
+.ic-gray   { background: linear-gradient(140deg,#374151,#6B7280); }
+.ic-yellow { background: linear-gradient(140deg,#92400E,#FCD34D); }
+.ic-dark   { background: linear-gradient(140deg,#1F2937,#374151); }
+.ic-indigo { background: linear-gradient(140deg,#3730A3,#6366F1); }
+.ic-lime   { background: linear-gradient(140deg,#3F6212,#84CC16); }
+
+/* ===================== DOCK ===================== */
+.home-dock {
+  padding: 10px 24px 28px;
+  display: flex; justify-content: center; flex-shrink: 0;
+}
+.dock-bar {
+  background: rgba(255,255,255,0.09);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 30px;
+  padding: 12px 20px;
+  display: flex; gap: 16px; align-items: center;
+}
+.home-indicator { display: none; }
