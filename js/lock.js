@@ -1,5 +1,5 @@
 /* ===================== BOOT → LOCK ===================== */
-setTimeout(() => { showScreen('lock'); }, 2800);
+setTimeout(() => { initSetup(); }, 2800);
 
 /* ===================== LOCK SCREEN ===================== */
 let touchStartY = 0;
