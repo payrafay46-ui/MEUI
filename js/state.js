@@ -14,14 +14,16 @@ const $ = id => document.getElementById(id);
 const $$ = sel => document.querySelectorAll(sel);
 
 const screens = {
-  boot: $('boot-screen'),
-  lock: $('lock-screen'),
-  pin:  $('pin-screen'),
-  home: $('home-screen'),
+  boot:  $('boot-screen'),
+  setup: $('setup-screen'),
+  lock:  $('lock-screen'),
+  pin:   $('pin-screen'),
+  home:  $('home-screen'),
 };
 
 function showScreen(name) {
   Object.entries(screens).forEach(([k, el]) => {
+    if (!el) return;
     if (k === name) el.classList.remove('hidden', 'gone');
     else            el.classList.add('hidden');
   });
