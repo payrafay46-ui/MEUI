@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="css/lockscreen.css"/>
 <link rel="stylesheet" href="css/homescreen.css"/>
 <link rel="stylesheet" href="css/cc.css"/>
+<link rel="stylesheet" href="css/setup.css"/>
 <link rel="stylesheet" href="css/settings.css"/>
 <link rel="stylesheet" href="css/launcher.css"/>
 </head>
@@ -46,6 +47,171 @@
       <div class="boot-bar-wrap"><div class="boot-bar"></div></div>
     </div>
   </div>
+
+  <!-- ==================== SETUP WIZARD ==================== -->
+  <!-- Tambahkan ini di index.html SETELAH boot-screen dan SEBELUM lock-screen -->
+  <div class="screen-layer hidden" id="setup-screen">
+
+    <!-- Floating background shapes -->
+    <div class="setup-shapes">
+      <div class="setup-shape"></div>
+      <div class="setup-shape"></div>
+      <div class="setup-shape"></div>
+      <div class="setup-shape"></div>
+    </div>
+
+    <!-- Progress dots -->
+    <div class="setup-progress" id="setup-dots"></div>
+
+    <!-- Pages -->
+    <div class="setup-pages">
+
+      <!-- Page 0: Sambutan awal -->
+      <div class="setup-page" id="setup-welcome">
+        <div class="setup-emoji">👋</div>
+        <div class="setup-title">Welcome to MEUI</div>
+        <div class="setup-sub">Selamat datang! Mari kita siapkan perangkat kamu dalam beberapa langkah mudah.</div>
+      </div>
+
+      <!-- Page 1: Bahasa -->
+      <div class="setup-page" id="setup-language">
+        <div class="setup-emoji">🌐</div>
+        <div class="setup-title">Choose Language</div>
+        <div class="setup-sub">Pilih bahasa yang ingin kamu gunakan.</div>
+        <div style="width:100%;margin-top:24px;display:flex;flex-direction:column;gap:8px;">
+          <div class="setup-lang-opt selected">
+            <span class="setup-lang-flag">🇺🇸</span>
+            <span class="setup-lang-name">English (US)</span>
+            <div class="setup-lang-check"></div>
+          </div>
+          <div class="setup-lang-opt" style="opacity:.45;pointer-events:none;">
+            <span class="setup-lang-flag">🇮🇩</span>
+            <span class="setup-lang-name">Bahasa Indonesia</span>
+            <div class="setup-lang-check"></div>
+            <span style="font-size:10px;color:rgba(255,255,255,.35);margin-left:-6px;">Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page 2: Wi-Fi -->
+      <div class="setup-page" id="setup-wifi">
+        <div class="setup-emoji">📶</div>
+        <div class="setup-title">Connect to Wi-Fi</div>
+        <div class="setup-sub">Sambungkan ke jaringan Wi-Fi untuk mulai menggunakan MEUI.</div>
+        <div class="setup-card">
+          <div class="setup-card-row">
+            <div class="setup-card-icon ic-blue"><span class="ms" style="font-size:18px">wifi</span></div>
+            <div class="setup-card-text">
+              <div class="setup-card-label">HomeNetwork_5G</div>
+              <div class="setup-card-sub">Secured · Connected</div>
+            </div>
+            <div class="setup-card-right">●</div>
+          </div>
+          <div class="setup-card-row">
+            <div class="setup-card-icon ic-dark"><span class="ms" style="font-size:18px">wifi</span></div>
+            <div class="setup-card-text">
+              <div class="setup-card-label">MEUI_Guest</div>
+              <div class="setup-card-sub">Secured</div>
+            </div>
+          </div>
+          <div class="setup-card-row">
+            <div class="setup-card-icon ic-dark"><span class="ms" style="font-size:18px">wifi</span></div>
+            <div class="setup-card-text">
+              <div class="setup-card-label">AndroidAP</div>
+              <div class="setup-card-sub">Open</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page 3: Google -->
+      <div class="setup-page" id="setup-google">
+        <div class="setup-emoji">🔵</div>
+        <div class="setup-title">Sign in with Google</div>
+        <div class="setup-sub">Masuk dengan akun Google untuk sinkronisasi kontak, kalender, dan lainnya.</div>
+        <div class="setup-card" style="margin-top:28px;">
+          <div class="setup-card-row">
+            <div class="setup-card-icon" style="background:linear-gradient(140deg,#1a1a3a,#4285f4)">G</div>
+            <div class="setup-card-text">
+              <div class="setup-card-label">user@gmail.com</div>
+              <div class="setup-card-sub">Google Account · Signed in</div>
+            </div>
+            <div class="setup-card-right">✓</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,.28);text-align:center;margin-top:14px;max-width:240px;line-height:1.5;">
+          Dengan masuk, kamu menyetujui Syarat Layanan dan Kebijakan Privasi Google.
+        </div>
+      </div>
+
+      <!-- Page 4: Anything else? -->
+      <div class="setup-page" id="setup-extras">
+        <div class="setup-emoji">✨</div>
+        <div class="setup-title">Anything else?</div>
+        <div class="setup-sub">Aktifkan fitur tambahan sesuai keinginan kamu.</div>
+        <div class="setup-extras">
+          <div class="setup-extra-item">
+            <span class="setup-extra-icon">🔒</span>
+            <div class="setup-extra-text">
+              <div class="setup-extra-label">Screen Lock</div>
+              <div class="setup-extra-sub">PIN 1234 sudah diaktifkan</div>
+            </div>
+            <div class="setup-extra-toggle on"></div>
+          </div>
+          <div class="setup-extra-item">
+            <span class="setup-extra-icon">📍</span>
+            <div class="setup-extra-text">
+              <div class="setup-extra-label">Location Services</div>
+              <div class="setup-extra-sub">Izinkan app menggunakan lokasi</div>
+            </div>
+            <div class="setup-extra-toggle on"></div>
+          </div>
+          <div class="setup-extra-item">
+            <span class="setup-extra-icon">🔔</span>
+            <div class="setup-extra-text">
+              <div class="setup-extra-label">Notifications</div>
+              <div class="setup-extra-sub">Terima notifikasi dari app</div>
+            </div>
+            <div class="setup-extra-toggle on"></div>
+          </div>
+          <div class="setup-extra-item">
+            <span class="setup-extra-icon">📊</span>
+            <div class="setup-extra-text">
+              <div class="setup-extra-label">Usage Analytics</div>
+              <div class="setup-extra-sub">Bantu kami perbaiki MEUI</div>
+            </div>
+            <div class="setup-extra-toggle"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page 5: Final -->
+      <div class="setup-page" id="setup-final">
+        <div class="setup-final-ring">🎉</div>
+        <div class="setup-title">You're all set!</div>
+        <div class="setup-sub">MEUI sudah siap digunakan. Selamat menikmati pengalaman baru kamu!</div>
+        <div style="margin-top:28px;width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;text-align:center;">
+          <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:4px;">Default PIN</div>
+          <div style="font-size:22px;font-weight:700;color:var(--meui-blue);letter-spacing:8px;">1234</div>
+        </div>
+      </div>
+
+    </div><!-- end setup-pages -->
+
+    <!-- Bottom nav -->
+    <div class="setup-nav">
+      <div class="setup-btn-back" id="setup-back" style="visibility:hidden;">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </div>
+      <button class="setup-btn-next" id="setup-next">
+        Continue
+        <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+      </button>
+      <div class="setup-btn-skip" id="setup-skip">Skip</div>
+    </div>
+
+  </div><!-- end setup-screen -->
+
 
   <!-- ==================== LOCK SCREEN ==================== -->
   <div class="screen-layer hidden" id="lock-screen">
@@ -896,10 +1062,10 @@
 <script src="js/clock.js"></script>
 <script src="js/lock.js"></script>
 <script src="js/cc.js"></script>
+<script src="js/setup.js"></script>
 <script src="js/launcher.js"></script>
 <script src="js/wallpaper.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/pages.js"></script>
 </body>
 </html>
-
